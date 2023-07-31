@@ -58,6 +58,15 @@ module.exports = {
     }
     const options = [];
 
+    const nameForm = await page.$$("#twister > div");
+    for(form of nameForm){
+      let v = await page.evaluate(el => el.getAttribute("id"), form);
+      console.log("Name: ",v)
+    }
+
+
+    
+
     const swatchSelect = await page.$$(
       ".swatchSelect > span > div > span > span > span > button > div > div > p"
     );
@@ -68,6 +77,10 @@ module.exports = {
     for (swatch of swatchSelect) {
       options.push(await swatch.evaluate((el) => el.textContent));
     }
+    const tabPage1 = await browser.newPage();
+    await tabPage1.goto(inputs.url);
+
+    await tabPage1.click("#size_name_0");
 
     for (swatch of swatchAvailable) {
       options.push(await swatch.evaluate((el) => el.textContent));
