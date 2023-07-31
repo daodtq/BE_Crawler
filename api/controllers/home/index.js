@@ -16,11 +16,16 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     let lateUrl;
+    const response = {};
+    let style_color = "style_name_";
 
     const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
     await page.goto(inputs.url);
-
+    const check_style_color = await page.$("#captchacharacters");
+    check_style_color
+      ? (style_color = "style_name_")
+      : (style_color = "color_name_");
     const ReCaptcha = async () => {
       let data = "";
       const image = await page.$eval("img", (el) => el.src);
@@ -52,32 +57,27 @@ module.exports = {
       }
     }
     const options = [];
-    const variation_style_name = await page.$$("#variation_style_name > ul");
-    console.log(variation_style_name)
-    for (style_name of variation_style_name) {
-      options.push(await style_name.evaluate((el) => el.textContent));
+
+    const swatchSelect = await page.$$(
+      ".swatchSelect > span > div > span > span > span > button > div > div > p"
+    );
+    const swatchAvailable = await page.$$(
+      ".swatchAvailable > span > div > span > span > span > button > div > div > p"
+    );
+
+    for (swatch of swatchSelect) {
+      options.push(await swatch.evaluate((el) => el.textContent));
     }
 
-    // const swatchSelect = await page.$$(
-    //   ".swatchSelect > span > div > span > span > span > button > div > div > p"
-    // );
-    // const swatchAvailable = await page.$$(
-    //   ".swatchAvailable > span > div > span > span > span > button > div > div > p"
-    // );
-
-    // for (swatch of swatchSelect) {
-    //   options.push(await swatch.evaluate((el) => el.textContent));
-    // }
-
-    // for (swatch of swatchAvailable) {
-    //   options.push(await swatch.evaluate((el) => el.textContent));
-    // }
+    for (swatch of swatchAvailable) {
+      options.push(await swatch.evaluate((el) => el.textContent));
+    }
 
     const elementTitle = await page.waitForSelector("#productTitle");
 
-    const title = await elementTitle.evaluate((el) => el.textContent);
-    console.log(title);
+    response.title = await elementTitle.evaluate((el) => el.textContent);
+    response.options = options;
 
-    return exits.success(options);
+    return exits.success(response);
   },
 };
