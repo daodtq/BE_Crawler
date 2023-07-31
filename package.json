@@ -7,10 +7,13 @@
   "dependencies": {
     "@sailshq/lodash": "^3.10.3",
     "cheerio": "^1.0.0-rc.12",
+    "node-tesseract-ocr": "^2.2.1",
+    "puppeteer": "^20.9.0",
     "sails": "^1.5.7",
     "sails-hook-orm": "^4.0.0",
     "sails-hook-sockets": "^2.0.0",
     "sails-mongo": "^2.0.1",
+    "tesseract.js": "^4.1.1",
     "unirest": "^0.6.0"
   },
   "devDependencies": {

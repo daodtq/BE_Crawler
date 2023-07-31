@@ -1,72 +1,82 @@
-
-const cheerio = require("cheerio");
-const unirest = require("unirest");
-
-const url = "https://www.amazon.com/DualSense-Wireless-Controller-PlayStation-5/dp/B08FC6C75Y/ref=pd_vtp_h_pd_vtp_h_sccl_3/144-3346908-6120219?pd_rd_w=uGQz8&content-id=amzn1.sym.e16c7d1a-0497-4008-b7be-636e59b1dfaf&pf_rd_p=e16c7d1a-0497-4008-b7be-636e59b1dfaf&pf_rd_r=QYP0KXCP5XNT291S0WG2&pd_rd_wg=ogxee&pd_rd_r=c33e92d7-8efd-4459-a3f6-721bbfd135a6&pd_rd_i=B08FC6C75Y&psc=1"
-
-const amazon = async () => {
-  const amazon_url = url;
-  const head = {
-    "User-Agent":
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36",
-  };
-  const data = await unirest.get(amazon_url).headers(head);
-
-  return { message: data.body };
-}
+const puppeteer = require("puppeteer");
+const Tesseract = require("tesseract.js");
 
 module.exports = {
+  friendlyName: "Index",
 
-
-  friendlyName: 'Index',
-
-
-  description: 'Index home.',
-
+  description: "Index home.",
 
   inputs: {
-
+    url: {
+      type: "string",
+    },
   },
 
+  exits: {},
 
-  exits: {
+  fn: async function (inputs, exits) {
+    let lateUrl;
 
+    const browser = await puppeteer.launch({ headless: false });
+    const page = await browser.newPage();
+    await page.goto(inputs.url);
+
+    const ReCaptcha = async () => {
+      let data = "";
+      const image = await page.$eval("img", (el) => el.src);
+      await Tesseract.recognize(image, "eng", {}).then(
+        async ({ data: { text } }) => {
+          await page.evaluate(
+            (val) => (document.querySelector("#captchacharacters").value = val),
+            text.toUpperCase()
+          );
+          await page.click('button[type="submit"]');
+          await page.waitForNavigation();
+          data = await page.url();
+        }
+      );
+
+      return data;
+    };
+    const captcha = await page.$("#captchacharacters");
+    if (captcha) {
+      for (let i = 0; i < 2; i++) {
+        console.log("==>>Start Find Captcha!!");
+        lateUrl = await ReCaptcha();
+        if (!lateUrl.includes("errors")) {
+          console.log("==>>End Find Captcha!!");
+          break;
+        } else {
+          i--;
+        }
+      }
+    }
+    const options = [];
+    const variation_style_name = await page.$$(".variation_style_name > ul");
+    for (style_name of variation_style_name) {
+      options.push(await swatch.evaluate((el) => el.textContent));
+    }
+
+    // const swatchSelect = await page.$$(
+    //   ".swatchSelect > span > div > span > span > span > button > div > div > p"
+    // );
+    // const swatchAvailable = await page.$$(
+    //   ".swatchAvailable > span > div > span > span > span > button > div > div > p"
+    // );
+
+    // for (swatch of swatchSelect) {
+    //   options.push(await swatch.evaluate((el) => el.textContent));
+    // }
+
+    // for (swatch of swatchAvailable) {
+    //   options.push(await swatch.evaluate((el) => el.textContent));
+    // }
+
+    const elementTitle = await page.waitForSelector("#productTitle");
+
+    const title = await elementTitle.evaluate((el) => el.textContent);
+    console.log(title);
+
+    return exits.success(options);
   },
-
-
-  fn: async function (_, exits) {
-    // All done.
-
-    const result = { about: [] };
-
-    amazon().then((data) => {
-      const $ = cheerio.load(data.message);
-
-
-      $("span#productTitle").each((i, el) => {
-        result.title = $(el).text().trim();
-      });
-
-      $("span.priceToPay").each((i, el) => {
-        result.price = $(el).find('span').first().text();
-      });
-
-
-      // $("ul.swatchesSquare").each((i, el) => {
-      //   result.option = $(el).find("li").text();
-      // });
-      $("ul.swatchesSquare").each((i, el) => {
-        console.log($(el).find("li").text())
-      result.option = $(el).find("li").text();
-    });
-    $("div#feature-bullets").each((i, el) => {
-      result.about = $(el).find('ul').text()
-
-    });
-
-    return exits.success(result);
-  });
-
-}
-
 };
