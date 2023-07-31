@@ -52,9 +52,10 @@ module.exports = {
       }
     }
     const options = [];
-    const variation_style_name = await page.$$(".variation_style_name > ul");
+    const variation_style_name = await page.$$("#variation_style_name > ul");
+    console.log(variation_style_name)
     for (style_name of variation_style_name) {
-      options.push(await swatch.evaluate((el) => el.textContent));
+      options.push(await style_name.evaluate((el) => el.textContent));
     }
 
     // const swatchSelect = await page.$$(
