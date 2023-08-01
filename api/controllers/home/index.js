@@ -117,20 +117,17 @@ module.exports = {
             "#corePrice_feature_div > div > span > span"
           );
 
-          await page.waitForSelector(".imgTagWrapper");
-          await page.click(".imgTagWrapper");
-          await page.waitForSelector("#ivImage_0");
-          await page.click("#ivImage_0");
+          await page.click(
+            '[class="a-spacing-small item imageThumbnail a-declarative"]'
+          );
+
           //ivLargeImage
+          const res = await page.$$(`#itemNo0 > span > span > div > img`);
           const image1 = await page.evaluate(
             (el) => el.getAttribute("src"),
-            (
-              await page.$$(`#ivLargeImage`)
-            )[0]
+            res[0]
           );
-          await page.waitForSelector(".a-button-close");
-          await page.click(".a-button-close");
-          await page.waitForSelector("#productTitle");
+
           // await page.click("#ivImage_1");
           // await page.click("#ivImage_2");
 
