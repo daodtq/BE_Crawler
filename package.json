@@ -6,11 +6,7 @@
   "keywords": [],
   "dependencies": {
     "@sailshq/lodash": "^3.10.3",
-<<<<<<< HEAD
-    "axios": "^1.4.0",
-=======
     "dom-parser": "^0.1.6",
->>>>>>> 9081527993d7e0b2e359b859c455bd106c531336
     "node-tesseract-ocr": "^2.2.1",
     "puppeteer": "^20.9.0",
     "sails": "^1.5.7",
