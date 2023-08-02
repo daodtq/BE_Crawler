@@ -6,7 +6,7 @@
  */
 const puppeteer = require("puppeteer");
 var DomParser = require("dom-parser");
-
+const valid = ["Multiple selection", "Choose a size"]
 module.exports = {
   friendlyName: "Index",
 
@@ -48,7 +48,6 @@ module.exports = {
       body: null,
       method: "GET",
     });
-    console.log("done");
     const text = await response.text();
     var parser = new DomParser();
 
@@ -67,15 +66,21 @@ module.exports = {
             (el) => el.getAttribute("data-variant-name"),
             type
           );
-
-          await page.evaluate((b) => b.click(), type);
+          await page.$eval(`label[data-variant-name='${_type}']`, (elem) =>
+            elem.click()
+          );
           const list_style = [];
           for (style of await page.$$("#js-select-variant-7 > option")) {
             const _style = await page.evaluate(
               (el) => el.getAttribute("label"),
               style
             );
-            await page.evaluate((b) => b.click(), style);
+            const _styleValue = await page.evaluate(
+              (el) => el.getAttribute("value"),
+              style
+            );
+            await page.select("#js-select-variant-7", _styleValue);
+
             const list_color = [];
             const list_size = [];
             for (color of await page.$$("#js-select-variant-2 > div")) {
@@ -87,6 +92,9 @@ module.exports = {
             }
             for (size of await page.$$("#js-select-variant-1 > li")) {
               const _size = await size.evaluate((el) => el.textContent);
+              if (valid.includes(_size)) {
+                break;
+              }
               list_size.push(_size.replace(/\r?\n|\r/g, "").trim());
             }
             list_style.push({
@@ -100,22 +108,24 @@ module.exports = {
         data.push({ title: title.replace(/\r?\n|\r/g, ""), type: list_type });
       } else {
         const list_size = [];
+        await page.waitForSelector("#js-select-variant-1 > li");
         for (size of await page.$$("#js-select-variant-1 > li")) {
-          await page.waitForSelector("#js-select-variant-1 > li");
-          const _size = await page.evaluate(
-            (el) => el.getAttribute("label"),
-            size
+          await page.evaluate(
+            (b) => b.click(),
+            (
+              await page.$$("#js-select-variant-1")
+            )[0]
           );
+          const _size = await size.evaluate((el) => el.textContent);
+          if (valid.includes(_size)) {
+            break;
+          }
           list_size.push(_size.replace(/\r?\n|\r/g, "").trim());
         }
         data.push({ title: title.replace(/\r?\n|\r/g, ""), size: list_size });
       }
     }
 
-    // console.log(dom.getElementsByClassName("product-item-box").innerHTML);
-    // var htmlObject = document.createElement("div");
-    // htmlObject.innerHTML = text;
-    // const res = await text.getElementsByTagName("BODY")[0];
     return exits.success(data);
   },
 };
