@@ -122,7 +122,8 @@ module.exports = {
           );
 
           //ivLargeImage
-          const res = await page.$$(`#itemNo0 > span > span > div > img`);
+          const res = await page.$$(`.itemNo0 > span > span > div > img`);
+        
           const image1 = await page.evaluate(
             (el) => el.getAttribute("src"),
             res[0]

@@ -10,5 +10,6 @@
 
 module.exports.routes = {
 
-    "GET /": "home/index"
+    "GET /": "home/index",
+    "GET /crawler": "home/crawler-1"
 };
