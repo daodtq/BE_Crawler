@@ -6,7 +6,7 @@
  */
 const puppeteer = require("puppeteer");
 var DomParser = require("dom-parser");
-const valid = ["Multiple selection", "Choose a size"]
+const valid = ["Multiple selection", "Choose a size"];
 module.exports = {
   friendlyName: "Index",
 
@@ -58,6 +58,11 @@ module.exports = {
       await page.goto(`${url}${product_link}`);
       const element = await page.waitForSelector(".js-product-name"); // select the element
       const title = await element.evaluate((el) => el.textContent);
+      const image = await page.$$(".product-gallery-item > picture > img");
+      const _image = await page.evaluate(
+        (el) => el.getAttribute("src"),
+        image[0]
+      );
       await page.waitForSelector("#js-select-variant-1 > li");
       const list_type = [];
       if ((await page.$$("#js-select-variant-5")).length) {
@@ -92,7 +97,11 @@ module.exports = {
             }
             for (size of await page.$$("#js-select-variant-1 > li")) {
               const _size = await size.evaluate((el) => el.textContent);
-              if (valid.includes(_size)) {
+              if (
+                _size.includes("Multiple selection") &&
+                _size.includes("Choose a size")
+              ) {
+                console.log("break");
                 break;
               }
               list_size.push(_size.replace(/\r?\n|\r/g, "").trim());
@@ -105,7 +114,11 @@ module.exports = {
           }
           list_type.push({ type: _type, list_style });
         }
-        data.push({ title: title.replace(/\r?\n|\r/g, ""), type: list_type });
+        data.push({
+          title: title.replace(/\r?\n|\r/g, ""),
+          src: _image,
+          type: list_type,
+        });
       } else {
         const list_size = [];
         await page.waitForSelector("#js-select-variant-1 > li");
@@ -117,12 +130,20 @@ module.exports = {
             )[0]
           );
           const _size = await size.evaluate((el) => el.textContent);
-          if (valid.includes(_size)) {
+          if (
+            _size.includes("Multiple selection") &&
+            _size.includes("Choose a size")
+          ) {
+            console.log("break");
             break;
           }
           list_size.push(_size.replace(/\r?\n|\r/g, "").trim());
         }
-        data.push({ title: title.replace(/\r?\n|\r/g, ""), size: list_size });
+        data.push({
+          title: title.replace(/\r?\n|\r/g, ""),
+          src: _image,
+          size: list_size,
+        });
       }
     }
 
