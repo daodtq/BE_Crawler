@@ -83,10 +83,10 @@ module.exports = {
           );
         }
         data.push({
-          title,
-          price,
+          title: title.replace("\n", ""),
+          price: price.replace("\n", ""),
           color: _color.toString(),
-          image: _image.toString(),
+          image: _image.join("\n"),
           size: _size.toString(),
         });
       } catch (error) {}
