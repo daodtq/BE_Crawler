@@ -86,7 +86,7 @@ module.exports = {
           title: title.replace("\n", ""),
           price: price.replace("\n", ""),
           color: _color.toString(),
-          image: _image.join("\n"),
+          image: _image.join(" "),
           size: _size.toString(),
         });
       } catch (error) {}
