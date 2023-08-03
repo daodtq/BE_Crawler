@@ -6,7 +6,12 @@
  */
 const puppeteer = require("puppeteer");
 var DomParser = require("dom-parser");
+const TelegramBot = require("node-telegram-bot-api");
+
+const token = "6643513496:AAEvdIT4KgxSjkVpPsrVsVyeZd7oegl0GCE";
 const valid = ["Multiple selection", "Choose a size"];
+const bot = new TelegramBot(token, { polling: true });
+
 module.exports = {
   friendlyName: "Index",
 
@@ -59,9 +64,11 @@ module.exports = {
           try {
             const product_link = res.getAttribute("href");
             await page.goto(`${url}${product_link}`);
-            const element = await page.waitForSelector(".js-product-name"); // select the element
+            const element = await page.waitForSelector(".js-product-name");
             const title = await element.evaluate((el) => el.textContent);
-            const image = await page.$$(".product-gallery-item > picture > img");
+            const image = await page.$$(
+              ".product-gallery-item > picture > img"
+            );
             const _image = await page.evaluate(
               (el) => el.getAttribute("src"),
               image[0]
@@ -74,8 +81,9 @@ module.exports = {
                   (el) => el.getAttribute("data-variant-name"),
                   type
                 );
-                await page.$eval(`label[data-variant-name='${_type}']`, (elem) =>
-                  elem.click()
+                await page.$eval(
+                  `label[data-variant-name='${_type}']`,
+                  (elem) => elem.click()
                 );
                 const list_style = [];
                 for (style of await page.$$("#js-select-variant-7 > option")) {
@@ -99,15 +107,13 @@ module.exports = {
                     list_color.push(_color);
                   }
                   for (size of await page.$$("#js-select-variant-1 > li")) {
-                    const _size = await size.evaluate((el) => el.textContent);
-                    if (
-                      _size.includes("Multiple selection") &&
-                      _size.includes("Choose a size")
-                    ) {
-                      console.log("break");
-                      break;
+                    const _size = (await size.evaluate((el) => el.textContent))
+                      .replace(/\r?\n|\r/g, "")
+                      .trim();
+                    if (valid.includes(_size)) {
+                      continue;
                     }
-                    list_size.push(_size.replace(/\r?\n|\r/g, "").trim());
+                    list_size.push(_size);
                   }
                   list_style.push({
                     style: _style,
@@ -119,9 +125,14 @@ module.exports = {
               }
               data.push({
                 title: title.replace(/\r?\n|\r/g, ""),
+                url: product_link,
                 src: _image,
                 type: list_type,
               });
+              // bot.on("message", async (msg) => {
+              // Explicit usage
+              await bot.sendMessage(-895677272, `src: ${_image}`);
+              // });
             } else {
               const list_size = [];
               await page.waitForSelector("#js-select-variant-1 > li");
@@ -132,30 +143,33 @@ module.exports = {
                     await page.$$("#js-select-variant-1")
                   )[0]
                 );
-                const _size = await size.evaluate((el) => el.textContent);
-                if (
-                  _size.includes("Multiple selection") &&
-                  _size.includes("Choose a size")
-                ) {
-                  console.log("break");
-                  break;
+                const _size = (await size.evaluate((el) => el.textContent))
+                  .replace(/\r?\n|\r/g, "")
+                  .trim();
+                if (valid.includes(_size)) {
+                  continue;
                 }
-                list_size.push(_size.replace(/\r?\n|\r/g, "").trim());
+                list_size.push(_size);
               }
               data.push({
                 title: title.replace(/\r?\n|\r/g, ""),
+                url: product_link,
                 src: _image,
                 size: list_size,
               });
+              await bot.sendMessage(-895677272, `${{
+                title: title.replace(/\r?\n|\r/g, ""),
+                url: product_link,
+                src: _image,
+              }}`);
             }
           } catch (error) {
-            console.log("Bug Get Product")
+            console.log("Bug Get Product");
+            console.log(error);
           }
-
         }
       } catch (error) {
-        console.log("Bug Fetch")
-
+        console.log("Bug Fetch");
       }
     }
 
