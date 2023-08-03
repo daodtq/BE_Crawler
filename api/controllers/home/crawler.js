@@ -1,17 +1,21 @@
-/**
- * CrawlerController
- *
- * @description :: Server-side actions for handling incoming requests.
- * @help        :: See https://sailsjs.com/docs/concepts/actions
- */
 const puppeteer = require("puppeteer");
 var DomParser = require("dom-parser");
-const TelegramBot = require("node-telegram-bot-api");
+const createCsvWriter = require("csv-writer").createObjectCsvWriter;
+const csvWriter = createCsvWriter({
+  path: "out.csv",
+  header: [
+    { id: "id", title: "ID" },
+    { id: "title", title: "Title" },
+    { id: "url", title: "URL" },
+    { id: "src", title: "Src" },
+    { id: "type", title: "Type" },
+    { id: "style", title: "Style" },
+    { id: "color", title: "Color" },
+    { id: "size", title: "Size" },
+  ],
+});
 
-const token = "6643513496:AAEvdIT4KgxSjkVpPsrVsVyeZd7oegl0GCE";
 const valid = ["Multiple selection", "Choose a size"];
-const bot = new TelegramBot(token, { polling: true });
-
 module.exports = {
   friendlyName: "Index",
 
@@ -20,6 +24,9 @@ module.exports = {
   inputs: {
     url: {
       type: "string",
+    },
+    quantity: {
+      type: "number",
     },
   },
 
@@ -30,7 +37,7 @@ module.exports = {
     const data = [];
     const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < inputs.quantity; i++) {
       try {
         const response = await fetch(`${url}${inputs.url}?page_id=${i}`, {
           headers: {
@@ -74,7 +81,6 @@ module.exports = {
               image[0]
             );
             await page.waitForSelector("#js-select-variant-1 > li");
-            const list_type = [];
             if ((await page.$$("#js-select-variant-5")).length) {
               for (type of await page.$$("#js-select-variant-5 > label")) {
                 const _type = await page.evaluate(
@@ -85,7 +91,6 @@ module.exports = {
                   `label[data-variant-name='${_type}']`,
                   (elem) => elem.click()
                 );
-                const list_style = [];
                 for (style of await page.$$("#js-select-variant-7 > option")) {
                   const _style = await page.evaluate(
                     (el) => el.getAttribute("label"),
@@ -97,6 +102,13 @@ module.exports = {
                   );
                   await page.select("#js-select-variant-7", _styleValue);
 
+                  let id = await page.evaluate(
+                    (el) => el.getAttribute("value"),
+                    (
+                      await page.$$(".js-productSkuId")
+                    )[0]
+                  );
+
                   const list_color = [];
                   const list_size = [];
                   for (color of await page.$$("#js-select-variant-2 > div")) {
@@ -107,35 +119,36 @@ module.exports = {
                     list_color.push(_color);
                   }
                   for (size of await page.$$("#js-select-variant-1 > li")) {
-                    const _size = (await size.evaluate((el) => el.textContent))
+                    let _size = (await size.evaluate((el) => el.textContent))
                       .replace(/\r?\n|\r/g, "")
                       .trim();
                     if (valid.includes(_size)) {
                       continue;
                     }
+                    _size = _size.slice(0, _size.length - 8).trim();
                     list_size.push(_size);
                   }
-                  list_style.push({
-                    style: _style,
-                    color: list_color,
-                    size: list_size,
+                  data.push({
+                    id,
+                    title: title.replace(/\r?\n|\r/g, ""),
+                    url: `${url}${product_link}`,
+                    src: _image,
+                    style: _style.slice(0, _style.length - 8),
+                    type: _type,
+                    size: list_size.toString(),
+                    color: list_color.toString(),
                   });
                 }
-                list_type.push({ type: _type, list_style });
               }
-              data.push({
-                title: title.replace(/\r?\n|\r/g, ""),
-                url: product_link,
-                src: _image,
-                type: list_type,
-              });
-              // bot.on("message", async (msg) => {
-              // Explicit usage
-              await bot.sendMessage(-895677272, `src: ${_image}`);
-              // });
             } else {
               const list_size = [];
               await page.waitForSelector("#js-select-variant-1 > li");
+              let id = await page.evaluate(
+                (el) => el.getAttribute("value"),
+                (
+                  await page.$$(".js-productSkuId")
+                )[0]
+              );
               for (size of await page.$$("#js-select-variant-1 > li")) {
                 await page.evaluate(
                   (b) => b.click(),
@@ -143,36 +156,33 @@ module.exports = {
                     await page.$$("#js-select-variant-1")
                   )[0]
                 );
-                const _size = (await size.evaluate((el) => el.textContent))
+                let _size = (await size.evaluate((el) => el.textContent))
                   .replace(/\r?\n|\r/g, "")
                   .trim();
                 if (valid.includes(_size)) {
                   continue;
                 }
+                _size = _size.slice(0, _size.length - 8).trim();
                 list_size.push(_size);
               }
+
               data.push({
+                id,
                 title: title.replace(/\r?\n|\r/g, ""),
-                url: product_link,
+                url: `${url}${product_link}`,
                 src: _image,
-                size: list_size,
+                size: list_size.toString(),
               });
-              await bot.sendMessage(-895677272, `${{
-                title: title.replace(/\r?\n|\r/g, ""),
-                url: product_link,
-                src: _image,
-              }}`);
             }
           } catch (error) {
-            console.log("Bug Get Product");
-            console.log(error);
+            console.log("Bug Link Product");
           }
         }
       } catch (error) {
         console.log("Bug Fetch");
       }
     }
-
+    csvWriter.writeRecords(data).then(() => console.log("done"));
     return exits.success(data);
   },
 };

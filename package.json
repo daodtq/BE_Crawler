@@ -6,6 +6,8 @@
   "keywords": [],
   "dependencies": {
     "@sailshq/lodash": "^3.10.3",
+    "csv-parser": "^3.0.0",
+    "csv-writer": "^1.6.0",
     "dom-parser": "^0.1.6",
     "node-telegram-bot-api": "^0.61.0",
     "node-tesseract-ocr": "^2.2.1",
