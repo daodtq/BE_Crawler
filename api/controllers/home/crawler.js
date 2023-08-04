@@ -85,13 +85,14 @@ module.exports = {
                 const price = await (
                   await page.$$(".product-price")
                 )[0].evaluate((el) => el.textContent);
-                const image = await page.$$(
+                const _image = [];
+                for (image of await page.$$(
                   ".product-gallery-item > picture > img"
-                );
-                const _image = await page.evaluate(
-                  (el) => el.getAttribute("src"),
-                  image[0]
-                );
+                )) {
+                  _image.push(
+                    await page.evaluate((el) => el.getAttribute("src"), image)
+                  );
+                }
                 if (_type == "Youth" || _type == "Kids") {
                   continue;
                 }
@@ -141,10 +142,11 @@ module.exports = {
                 }
                 data.push({
                   id,
+                  page:i,
                   price: price.replace(/\r?\n|\r/g, ""),
                   title: title.replace(/\r?\n|\r/g, ""),
                   url: `${url}${product_link}`,
-                  src: _image,
+                  src: _image.join(", "),
                   style: _style.slice(0, _style.length - 8),
                   type: _type,
                   size: list_size.toString(),
@@ -160,13 +162,14 @@ module.exports = {
                   await page.$$(".js-productSkuId")
                 )[0]
               );
-              const image = await page.$$(
+              const _image = [];
+              for (image of await page.$$(
                 ".product-gallery-item > picture > img"
-              );
-              const _image = await page.evaluate(
-                (el) => el.getAttribute("src"),
-                image[0]
-              );
+              )) {
+                _image.push(
+                  await page.evaluate((el) => el.getAttribute("src"), image)
+                );
+              }
               for (size of await page.$$("#js-select-variant-1 > li")) {
                 await page.evaluate(
                   (b) => b.click(),
@@ -186,10 +189,11 @@ module.exports = {
 
               data.push({
                 id,
+                page:i,
                 price: price.replace(/\r?\n|\r/g, ""),
                 title: title.replace(/\r?\n|\r/g, ""),
                 url: `${url}${product_link}`,
-                src: _image,
+                src: _image.join(", "),
                 size: list_size.toString(),
               });
             }

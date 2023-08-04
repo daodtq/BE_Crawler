@@ -110,6 +110,7 @@ module.exports = {
           );
         }
         data.push({
+          page:i,
           title: title.replace("\n", ""),
           url: `${url}${product_link}`,
           price: price.replace("\n", ""),
