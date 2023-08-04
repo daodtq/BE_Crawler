@@ -39,7 +39,7 @@ module.exports = {
     const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
     const url = "https://tiniven.com";
-    for (let i = 1; i < inputs.quantity; i++) {
+    for (let i = 0; i < inputs.quantity; i++) {
       const response = await fetch(`${url}${inputs.url}/page/${i}/`, {
         headers: {
           accept:
@@ -66,11 +66,11 @@ module.exports = {
       var parser = new DomParser();
 
       var dom = parser.parseFromString(text);
-      for (res of dom.getElementsByClassName("badge-container")) {
+      for (res of dom.getElementsByClassName("product_cat-t-shirt")) {
         try {
           const _res = (await res.getElementsByTagName("a"))[0];
           const product_link = _res.getAttribute("href");
-          await page.goto(`${url}${product_link}`);
+          await page.goto(`${product_link}`);
           const title = await (
             await page.waitForSelector(".product-title")
           ).evaluate((el) => el.textContent);
@@ -80,7 +80,7 @@ module.exports = {
 
           const image = await page.evaluate(
             (el) => el.getAttribute("src"),
-            page.$$(".wp-post-image")[0]
+            (await page.$$(".wp-post-image"))[0]
           );
 
           const color = await (await page.$$(".wcpa_sel_type_tick-border"))[0];
@@ -98,12 +98,13 @@ module.exports = {
           data.push({
             page: i,
             title: title.replace("\n", ""),
-            url: `${url}${product_link}`,
+            url: `${product_link}`,
             price: price.replace("\n", ""),
             src: image,
             color: color_group.toString(),
             size: size_group.toString(),
           });
+          return exits.success(data);
         } catch (error) {
           console.log(error);
         }
