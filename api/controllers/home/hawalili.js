@@ -6,7 +6,23 @@
  */
 var DomParser = require("dom-parser");
 const puppeteer = require("puppeteer");
+const createCsvWriter = require("csv-writer").createObjectCsvWriter;
+const csvWriter = createCsvWriter({
+  path: "hawalili.csv",
+  header: [
+    { id: "id", title: "ID" },
+    { id: "title", title: "Title" },
+    { id: "price", title: "Price" },
+    { id: "url", title: "URL" },
+    { id: "src", title: "Src" },
+    { id: "type", title: "Type" },
+    { id: "style", title: "Style" },
+    { id: "color", title: "Color" },
+    { id: "size", title: "Size" },   
 
+
+  ],
+});
 module.exports = {
   inputs: {
     url: {
@@ -47,28 +63,65 @@ module.exports = {
         const product_link = _res.getAttribute("href");
         await page.goto(`${url}${product_link}`);
         const title = await (
-          await page.waitForSelector(".break-words")
+          await page.waitForSelector(".cm-goods-detail-title-1")
         ).evaluate((el) => el.textContent);
-        const price = await (
-          await page.waitForSelector(".cm-goods-detail-price-activity")
-        ).evaluate((el) => el.textContent);
+        let price = "";
+        if (await (await page.$$(".cm-goods-detail-price-activity")).length) {
+          price = await (
+            await page.$$(".cm-goods-detail-price-activity")
+          )[0].evaluate((el) => el.textContent);
+        } else {
+          price = await (
+            await page.$$(".cm-goods-detail-price")
+          )[0].evaluate((el) => el.textContent);
+        }
 
         const _image = [];
-        for (image of await page.$$(".swiper-zoom-target > span > img")) {
+        for (image of await page.$$(".swiper-zoom-target > span > noscript ")) {
+          let script = await image.evaluate((el) => el.textContent);
+
+          var temp = new DomParser().parseFromString(script);
           _image.push(
-            `${url}${await page.evaluate((el) => el.getAttribute("src"), image)}`
+            `${url}${temp.getElementsByTagName("img")[0].getAttribute("src")}`
+          );
+        }
+        for (image of await page.$$(".swiper-zoom-target > span > img ")) {
+          if (await page.evaluate((el) => el.getAttribute("srcset"), image)) {
+            const newImage = `${url}${await page.evaluate(
+              (el) => el.getAttribute("src"),
+              image
+            )}`;
+
+            if (!_image.includes(newImage)) {
+              _image.push(newImage);
+            }
+          }
+        }
+        const _color = [];
+        for (color of await page.$$(".w-9 > div > span > img")) {
+          _color.push(
+            await page.evaluate((el) => el.getAttribute("alt"), color)
+          );
+        }
+        const _size = [];
+        for (size of await page.$$(".p-2")) {
+          _size.push(
+            await page.evaluate((el) => el.getAttribute("title"), size)
           );
         }
         data.push({
           title: title.replace("\n", ""),
+          url: `${url}${product_link}`,
           price: price.replace("\n", ""),
-          // color: _color.toString(),
-          image: _image.join(" "),
-          // size: _size.toString(),
+          src: _image.join(" "),
+          color: _color.toString(),
+          size: _size.toString(),
         });
-        return exits.success(data);
-      } catch (error) {}
+      } catch (error) {
+        console.log(error);
+      }
     }
+    csvWriter.writeRecords(data).then(() => console.log("done"));
     return exits.success(data);
   },
 };

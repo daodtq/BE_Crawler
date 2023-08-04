@@ -2,11 +2,12 @@ const puppeteer = require("puppeteer");
 var DomParser = require("dom-parser");
 const createCsvWriter = require("csv-writer").createObjectCsvWriter;
 const csvWriter = createCsvWriter({
-  path: "out.csv",
+  path: "printerval.csv",
   header: [
     { id: "id", title: "ID" },
     { id: "title", title: "Title" },
     { id: "url", title: "URL" },
+    { id: "price", title: "Price" },
     { id: "src", title: "Src" },
     { id: "type", title: "Type" },
     { id: "style", title: "Style" },
@@ -73,13 +74,7 @@ module.exports = {
             await page.goto(`${url}${product_link}`);
             const element = await page.waitForSelector(".js-product-name");
             const title = await element.evaluate((el) => el.textContent);
-            const image = await page.$$(
-              ".product-gallery-item > picture > img"
-            );
-            const _image = await page.evaluate(
-              (el) => el.getAttribute("src"),
-              image[0]
-            );
+
             await page.waitForSelector("#js-select-variant-1 > li");
             if ((await page.$$("#js-select-variant-5")).length) {
               for (type of await page.$$("#js-select-variant-5 > label")) {
@@ -87,58 +82,74 @@ module.exports = {
                   (el) => el.getAttribute("data-variant-name"),
                   type
                 );
+                const price = await (
+                  await page.$$(".product-price")
+                )[0].evaluate((el) => el.textContent);
+                const image = await page.$$(
+                  ".product-gallery-item > picture > img"
+                );
+                const _image = await page.evaluate(
+                  (el) => el.getAttribute("src"),
+                  image[0]
+                );
+                if (_type == "Youth" || _type == "Kids") {
+                  continue;
+                }
                 await page.$eval(
                   `label[data-variant-name='${_type}']`,
                   (elem) => elem.click()
                 );
-                for (style of await page.$$("#js-select-variant-7 > option")) {
-                  const _style = await page.evaluate(
-                    (el) => el.getAttribute("label"),
-                    style
-                  );
-                  const _styleValue = await page.evaluate(
-                    (el) => el.getAttribute("value"),
-                    style
-                  );
-                  await page.select("#js-select-variant-7", _styleValue);
+                const _style = await page.evaluate(
+                  (el) => el.getAttribute("label"),
+                  (
+                    await page.$$("#js-select-variant-7 > option")
+                  )[0]
+                );
+                const _styleValue = await page.evaluate(
+                  (el) => el.getAttribute("value"),
+                  (
+                    await page.$$("#js-select-variant-7 > option")
+                  )[0]
+                );
+                await page.select("#js-select-variant-7", _styleValue);
 
-                  let id = await page.evaluate(
-                    (el) => el.getAttribute("value"),
-                    (
-                      await page.$$(".js-productSkuId")
-                    )[0]
-                  );
+                let id = await page.evaluate(
+                  (el) => el.getAttribute("value"),
+                  (
+                    await page.$$(".js-productSkuId")
+                  )[0]
+                );
 
-                  const list_color = [];
-                  const list_size = [];
-                  for (color of await page.$$("#js-select-variant-2 > div")) {
-                    const _color = await page.evaluate(
-                      (el) => el.getAttribute("title"),
-                      color
-                    );
-                    list_color.push(_color);
-                  }
-                  for (size of await page.$$("#js-select-variant-1 > li")) {
-                    let _size = (await size.evaluate((el) => el.textContent))
-                      .replace(/\r?\n|\r/g, "")
-                      .trim();
-                    if (valid.includes(_size)) {
-                      continue;
-                    }
-                    _size = _size.slice(0, _size.length - 8).trim();
-                    list_size.push(_size);
-                  }
-                  data.push({
-                    id,
-                    title: title.replace(/\r?\n|\r/g, ""),
-                    url: `${url}${product_link}`,
-                    src: _image,
-                    style: _style.slice(0, _style.length - 8),
-                    type: _type,
-                    size: list_size.toString(),
-                    color: list_color.toString(),
-                  });
+                const list_color = [];
+                const list_size = [];
+                for (color of await page.$$("#js-select-variant-2 > div")) {
+                  const _color = await page.evaluate(
+                    (el) => el.getAttribute("title"),
+                    color
+                  );
+                  list_color.push(_color);
                 }
+                for (size of await page.$$("#js-select-variant-1 > li")) {
+                  let _size = (await size.evaluate((el) => el.textContent))
+                    .replace(/\r?\n|\r/g, "")
+                    .trim();
+                  if (valid.includes(_size)) {
+                    continue;
+                  }
+                  _size = _size.slice(0, _size.length - 8).trim();
+                  list_size.push(_size);
+                }
+                data.push({
+                  id,
+                  price: price.replace(/\r?\n|\r/g, ""),
+                  title: title.replace(/\r?\n|\r/g, ""),
+                  url: `${url}${product_link}`,
+                  src: _image,
+                  style: _style.slice(0, _style.length - 8),
+                  type: _type,
+                  size: list_size.toString(),
+                  color: list_color.toString(),
+                });
               }
             } else {
               const list_size = [];
@@ -148,6 +159,13 @@ module.exports = {
                 (
                   await page.$$(".js-productSkuId")
                 )[0]
+              );
+              const image = await page.$$(
+                ".product-gallery-item > picture > img"
+              );
+              const _image = await page.evaluate(
+                (el) => el.getAttribute("src"),
+                image[0]
               );
               for (size of await page.$$("#js-select-variant-1 > li")) {
                 await page.evaluate(
@@ -168,6 +186,7 @@ module.exports = {
 
               data.push({
                 id,
+                price: price.replace(/\r?\n|\r/g, ""),
                 title: title.replace(/\r?\n|\r/g, ""),
                 url: `${url}${product_link}`,
                 src: _image,
