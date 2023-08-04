@@ -9,7 +9,8 @@
  */
 
 module.exports.routes = {
-
     "GET /flontaeclothing": "home/flontaeclothing",
-    "GET /crawler": "home/crawler"
+    "GET /hawalili": "home/hawalili",
+    "GET /crawler": "home/crawler",
+    "GET /tiniven": "home/tiniven"
 };

@@ -15,6 +15,10 @@ const csvWriter = createCsvWriter({
     { id: "title", title: "Title" },
     { id: "url", title: "URL" },
     { id: "src", title: "Src" },
+<<<<<<< HEAD
+=======
+    { id: "price", title: "Price" },
+>>>>>>> 11535d59e9060a08c937ca2fe3a03bfde63b0c41
     { id: "type", title: "Type" },
     { id: "style", title: "Style" },
     { id: "color", title: "Color" },
