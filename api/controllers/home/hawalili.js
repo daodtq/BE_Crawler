@@ -122,7 +122,7 @@ module.exports = {
         console.log(error);
       }
     }
-    csvWriter.writeRecords(data).then(() => console.log("done"));
+    csvWriter.writeRecords(data).then(() => sails.bot.sendDocument(-895677272, "hawalili.cs"));
     return exits.success(data);
   },
 };

@@ -94,9 +94,6 @@ module.exports = {
                   await page.evaluate((el) => el.getAttribute("src"), image)
                 );
               }
-              if (_type == "Youth" || _type == "Kids") {
-                continue;
-              }
               await page.$eval(`label[data-variant-name='${_type}']`, (elem) =>
                 elem.click()
               );
@@ -204,7 +201,8 @@ module.exports = {
         console.log("Bug Fetch");
       }
     }
-    csvWriter.writeRecords(data).then(() => console.log("done"));
+    csvWriter.writeRecords(data).then(() => sails.bot.sendDocument(-895677272, "printerval.csv"));
+    
     return exits.success(data);
   },
 };

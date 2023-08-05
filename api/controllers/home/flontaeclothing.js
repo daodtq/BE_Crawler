@@ -40,7 +40,7 @@ module.exports = {
     const page = await browser.newPage();
     const url = "https://flontaeclothing.com";
     for (let i = 0; i < inputs.quantity; i++) {
-      console.log(i)
+      console.log(i);
       const response = await fetch(`${url}${inputs.url}?page=${i}`, {
         headers: {
           accept:
@@ -113,7 +113,9 @@ module.exports = {
         }
       }
     }
-    csvWriter.writeRecords(data).then(() => console.log("done"));
+    csvWriter
+      .writeRecords(data)
+      .then(() => sails.bot.sendDocument(-895677272, "flontaeclothing.csv"));
     return exits.success(data);
   },
 };
