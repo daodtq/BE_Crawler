@@ -15,7 +15,8 @@ module.exports.bootstrap = async function () {
   sails.on("lifted", async () => {
     if (sails.botstatus != "is_running") {
       sails.botstatus = "is_running"
-      sails.bot = new TelegramBot(token, { polling: true });
+      console.log("???")
+      // sails.bot = new TelegramBot(token, { polling: true });
     }
   });
   // By convention, this is a good place to set up fake data during development.
