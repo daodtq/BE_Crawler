@@ -13,7 +13,10 @@ const token = "6643513496:AAEvdIT4KgxSjkVpPsrVsVyeZd7oegl0GCE";
 
 module.exports.bootstrap = async function () {
   sails.on("lifted", async () => {
-    sails.bot  = new TelegramBot(token, { polling: true });
+    if (sails.botstatus != "is_running") {
+      sails.botstatus = "is_running"
+      sails.bot = new TelegramBot(token, { polling: true });
+    }
   });
   // By convention, this is a good place to set up fake data during development.
   //

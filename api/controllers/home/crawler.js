@@ -201,7 +201,7 @@ module.exports = {
         console.log("Bug Fetch");
       }
     }
-    csvWriter.writeRecords(data).then(() => sails.bot.sendDocument(-895677272, "printerval.csv"));
+    csvWriter.writeRecords(data).then(() => console.log("Done"));
     
     return exits.success(data);
   },
