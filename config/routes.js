@@ -14,6 +14,7 @@ module.exports.routes = {
   "GET /crawler": "home/crawler",
   "GET /tiniven": "home/tiniven",
   "GET /amazon": "home/amazonold",
-  "GET /test": "home/test",
+  "POST /res": "home/res",
   "GET /bot": "home/bot",
+  "POST /login": "home/login",
 };

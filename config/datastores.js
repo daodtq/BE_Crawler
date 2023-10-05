@@ -49,10 +49,13 @@ module.exports.datastores = {
     *                                                                          *
     ***************************************************************************/
     // adapter: 'sails-mysql',
-    // url: 'mysql://user:password@host:port/database',
+    // url: 'mysql://root:root@localhost:8080',
 
     // adapter: 'sails-mongo',
     // url: 'mongodb://pain:oQPKmwOaOEcfyhff@ac-lfaebgx-shard-00-00.7zprpkm.mongodb.net:27017,ac-lfaebgx-shard-00-01.7zprpkm.mongodb.net:27017,ac-lfaebgx-shard-00-02.7zprpkm.mongodb.net:27017/?ssl=true&replicaSet=atlas-9sqlx4-shard-0&authSource=admin&retryWrites=true&w=majority'
+
+    adapter: 'sails-mongo',
+    url: 'mongodb://admin:admin@ac-uhqhqh5-shard-00-00.bq135lo.mongodb.net:27017,ac-uhqhqh5-shard-00-01.bq135lo.mongodb.net:27017,ac-uhqhqh5-shard-00-02.bq135lo.mongodb.net:27017/?ssl=true&replicaSet=atlas-fcgxho-shard-0&authSource=admin&retryWrites=true&w=majority&appName=AtlasApp'
   },
 
 
