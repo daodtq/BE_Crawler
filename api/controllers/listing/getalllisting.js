@@ -14,6 +14,9 @@ module.exports = {
     currentPage: {
       type: "number",
     },
+    search: {
+      type: "string",
+    },
   },
 
   exits: {},
@@ -28,11 +31,20 @@ module.exports = {
 
     // Tính chỉ số bắt đầu và kết thúc dựa trên trang hiện tại và số dòng trên mỗi trang
     const startIndex = (currentPage - 1) * perPage;
-
+    const searchCondition = {
+      or: [
+        { link_listing: { contains: inputs.search } },
+        { sku: { contains: inputs.search } },
+        // Thêm các điều kiện tìm kiếm khác ở đây nếu cần
+      ],
+      data: { ">=": startDate, "<=": endDate },
+    };
     // Lệnh query để lấy dữ liệu từ model Listing
-    await Listing.find({
-      date: { ">=": startDate, "<=": endDate },
-    })
+    await Listing.find(
+      inputs?.search
+        ? searchCondition
+        : { data: { ">=": startDate, "<=": endDate } }
+    )
       .limit(perPage)
       .skip(startIndex)
       .exec(async (err, listings) => {
