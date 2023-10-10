@@ -11,7 +11,7 @@ module.exports = {
     },
     password: {
       type: "string",
-    },
+    }
   },
 
   exits: {},
@@ -19,9 +19,9 @@ module.exports = {
   fn: async function (inputs, exits) {
     existUser = await User.findOne(inputs);
     if (existUser) {
-      return exits.success({ status: "Success", permission: existUser.permission })
+      return exits.success({ status: "Success", permission: existUser.permission, data: existUser })
     } else {
-      return exits.success({ status: "Fail" })
+      return exits.success({ status: "Fail"  })
     }
   },
 };

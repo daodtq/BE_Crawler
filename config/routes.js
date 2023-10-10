@@ -9,12 +9,22 @@
  */
 
 module.exports.routes = {
-  "GET /flontaeclothing": "home/flontaeclothing",
-  "GET /hawalili": "home/hawalili",
-  "GET /crawler": "home/crawler",
-  "GET /tiniven": "home/tiniven",
-  "GET /amazon": "home/amazonold",
-  "POST /res": "home/res",
-  "GET /bot": "home/bot",
-  "POST /login": "home/login",
+  //account
+  "POST /login": "account/login",
+  "GET /getuser": "account/getuser",
+  "POST /adduser": "account/adduser",
+  "POST /removeuser": "account/removeuser",
+  "POST /edituser": "account/edituser",
+  //listing
+  "GET /getlisting": "listing/getlisting",
+  "GET /getalllisting": "listing/getalllisting",
+  "POST /addlisting": "listing/addlisting",
+  "POST /removelisting": "listing/removelisting",
+  "POST /editlisting": "listing/editlisting",
+  //task
+  "GET /gettask": "task/gettask",
+  "GET /gettaskuser": "task/gettaskuser",
+  "POST /addtask": "task/addtask",
+  "POST /removetask": "task/removetask",
+  "POST /edittask": "task/edittask",
 };

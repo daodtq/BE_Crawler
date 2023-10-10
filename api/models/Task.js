@@ -9,9 +9,11 @@ module.exports = {
   attributes: {
     id: { type: "string" },
     username: { type: "string", required: true },
-    password: { type: "string", required: true },
-    email: { type: "string" },
+    iduser: { type: "string", required: true },
     name: { type: "string", required: true },
-    permission: { type: "number" },
+    task: { type: "string", required: true },
+    status: { type: "boolean" },
+    date: { type: "number", required: true },
+    note: { type: "string" },
   },
 };
