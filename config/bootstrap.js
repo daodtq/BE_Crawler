@@ -15,7 +15,6 @@ module.exports.bootstrap = async function () {
   sails.on("lifted", async () => {
     if (sails.botstatus != "is_running") {
       sails.botstatus = "is_running"
-      console.log("???")
       // sails.bot = new TelegramBot(token, { polling: true });
     }
   });

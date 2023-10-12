@@ -6,23 +6,20 @@ module.exports = {
 
   inputs: {
     id: { type: "string" },
-    username: { type: "string"},
-    iduser: { type: "string"},
-    name: { type: "string"},
-    task: { type: "string"},
+    account: { type: "string" },
+    iduser: { type: "string" },
+    name: { type: "string" },
     status: { type: "string" },
-    date: { type: "number"},
-    note: { type: "string" },
   },
 
   exits: {},
 
   fn: async function (inputs, exits) {
     try {
-      await Task.updateOne({ id: inputs.id }).set(inputs);
+      await Account.updateOne({ id: inputs.id }).set(inputs);
       return exits.success({
         status: "success",
-        message: `Sửa Task thành công!`,
+        message: `Sửa Account thành công!`,
       });
     } catch (error) {
       return exits.success({

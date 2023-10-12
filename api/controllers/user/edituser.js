@@ -1,28 +1,37 @@
 var DomParser = require("dom-parser");
+
 module.exports = {
   friendlyName: "Index",
 
   description: "Index home.",
 
   inputs: {
-    id: { type: "string" },
-    username: { type: "string"},
-    iduser: { type: "string"},
-    name: { type: "string"},
-    task: { type: "string"},
-    status: { type: "string" },
-    date: { type: "number"},
-    note: { type: "string" },
+    username: {
+      type: "string",
+    },
+    password: {
+      type: "string",
+    },
+    name: {
+      type: "string",
+    },
+    id: {
+      type: "string",
+    },
+    listing: {
+      type: "string",
+    },
   },
 
   exits: {},
 
   fn: async function (inputs, exits) {
     try {
-      await Task.updateOne({ id: inputs.id }).set(inputs);
+      await User.updateOne({ id: inputs.id }).set(inputs);
       return exits.success({
         status: "success",
-        message: `Sửa Task thành công!`,
+        data: inputs,
+        message: `Sửa user ${inputs.username} thành công!`,
       });
     } catch (error) {
       return exits.success({

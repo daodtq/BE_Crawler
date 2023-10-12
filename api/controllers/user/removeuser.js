@@ -6,6 +6,15 @@ module.exports = {
   description: "Index home.",
 
   inputs: {
+    username: {
+      type: "string",
+    },
+    password: {
+      type: "string",
+    },
+    name: {
+      type: "string",
+    },
     id: {
       type: "string",
     },
@@ -15,11 +24,11 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      await Listing.destroyOne({ id: inputs.id });
+      await User.destroyOne({ id: inputs.id });
       return exits.success({
         status: "success",
         data: inputs.id,
-        message: `Xóa Listing thành công!`,
+        message: `Xóa ${inputs.username} thành công!`,
       });
     } catch (e) {
       return exits.success({ status: "fail", message: "Lỗi không xác định!" });

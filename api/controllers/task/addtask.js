@@ -31,7 +31,6 @@ module.exports = {
         status: "success",
       });
     } catch (e) {
-      console.log(e);
       return exits.success({
         message: "Lổi không xác định!",
         status: "fail",

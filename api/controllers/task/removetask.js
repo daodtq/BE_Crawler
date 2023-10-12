@@ -22,7 +22,6 @@ module.exports = {
         message: `Xóa Task thành công!`,
       });
     } catch (e) {
-      console.log(e)
       return exits.success({ status: "fail", message: "Lỗi không xác định!" });
     }
   },

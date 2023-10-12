@@ -48,7 +48,6 @@ module.exports = {
         message: `Sửa Listing thành công!`,
       });
     } catch (error) {
-      console.log(error)
       return exits.success({
         status: "fail",
         message: `Lổi không xác định!`,

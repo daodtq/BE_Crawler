@@ -39,7 +39,7 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      if (!inputs.SKU){
+      if (!inputs.SKU) {
         inputs.SKU = generateRandomString();
       }
       await Listing.create({ ...inputs });
@@ -50,7 +50,6 @@ module.exports = {
         status: "success",
       });
     } catch (e) {
-      console.log(e);
       return exits.success({
         message: "Lổi không xác định!",
         status: "fail",

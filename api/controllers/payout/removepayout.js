@@ -6,15 +6,6 @@ module.exports = {
   description: "Index home.",
 
   inputs: {
-    username: {
-      type: "string",
-    },
-    password: {
-      type: "string",
-    },
-    name: {
-      type: "string",
-    },
     id: {
       type: "string",
     },
@@ -24,11 +15,10 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      await User.destroyOne({ id: inputs.id });
+      await Payout.destroyOne({ id: inputs.id, status: false });
       return exits.success({
         status: "success",
-        data: inputs.id,
-        message: `Xóa ${inputs.username} thành công!`,
+        message: `Xóa Payout thành công!`,
       });
     } catch (e) {
       console.log(e)

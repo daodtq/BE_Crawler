@@ -1,34 +1,24 @@
 var DomParser = require("dom-parser");
-
+const moment = require("moment/moment");
 module.exports = {
   friendlyName: "Index",
 
   description: "Index home.",
 
   inputs: {
-    username: {
-      type: "string",
-    },
-    password: {
-      type: "string",
-    },
-    name: {
-      type: "string",
-    },
-    id: {
-      type: "string",
-    },
+    idaccount: { type: "string", require: true },
+    iduser: { type: "string", require: true },
+    price: { type: "number", require: true },
   },
 
   exits: {},
 
   fn: async function (inputs, exits) {
     try {
-      await User.updateOne({ id: inputs.id }).set(inputs);
+      await Payout.create({ ...inputs, date: moment().format("x"), status: false });
       return exits.success({
         status: "success",
-        data: inputs,
-        message: `Sửa user ${inputs.username} thành công!`,
+        message: `Thêm Payout thành công!`,
       });
     } catch (error) {
       return exits.success({

@@ -1,4 +1,5 @@
 var DomParser = require("dom-parser");
+
 module.exports = {
   friendlyName: "Index",
 
@@ -6,28 +7,25 @@ module.exports = {
 
   inputs: {
     id: { type: "string" },
-    username: { type: "string"},
-    iduser: { type: "string"},
-    name: { type: "string"},
-    task: { type: "string"},
+    account: { type: "string" },
+    iduser: { type: "string" },
+    name: { type: "string" },
     status: { type: "string" },
-    date: { type: "number"},
-    note: { type: "string" },
   },
 
   exits: {},
 
   fn: async function (inputs, exits) {
     try {
-      await Task.updateOne({ id: inputs.id }).set(inputs);
+      await Account.create(inputs)
       return exits.success({
+        message: "Thêm Account thành công!",
         status: "success",
-        message: `Sửa Task thành công!`,
       });
-    } catch (error) {
+    } catch (e) {
       return exits.success({
+        message: "Lổi không xác định!",
         status: "fail",
-        message: `Lổi không xác định!`,
       });
     }
   },

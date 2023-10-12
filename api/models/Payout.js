@@ -8,11 +8,10 @@
 module.exports = {
   attributes: {
     id: { type: "string" },
-    username: { type: "string", required: true },
-    password: { type: "string", required: true },
-    email: { type: "string" },
-    name: { type: "string", required: true },
-    listing: { type: "number"},
-    permission: { type: "number" },
+    idaccount: { type: "string", required: true },
+    iduser: { type: "string", required: true },
+    date: { type: "number", required: true },
+    price: { type: "number", required: true },
+    status: { type: "boolean", required: true },
   },
 };

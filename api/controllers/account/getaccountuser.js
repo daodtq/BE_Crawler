@@ -1,29 +1,23 @@
 var DomParser = require("dom-parser");
+const moment = require("moment/moment");
+
 module.exports = {
   friendlyName: "Index",
-
   description: "Index home.",
-
   inputs: {
     id: { type: "string" },
-    username: { type: "string"},
-    iduser: { type: "string"},
-    name: { type: "string"},
-    task: { type: "string"},
+    account: { type: "string" },
+    iduser: { type: "string" },
+    name: { type: "string" },
     status: { type: "string" },
-    date: { type: "number"},
-    note: { type: "string" },
   },
 
   exits: {},
 
   fn: async function (inputs, exits) {
     try {
-      await Task.updateOne({ id: inputs.id }).set(inputs);
-      return exits.success({
-        status: "success",
-        message: `Sửa Task thành công!`,
-      });
+      const data = await Account.find({ iduser: inputs.iduser })
+      return exits.success(data);
     } catch (error) {
       return exits.success({
         status: "fail",

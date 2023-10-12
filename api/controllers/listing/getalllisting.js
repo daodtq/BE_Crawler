@@ -25,6 +25,14 @@ module.exports = {
     const startDate = moment(inputs.startDate).startOf("day").format("x"); // Thay thế bằng ngày bắt đầu thực tế
     const endDate = moment(inputs.endDate).endOf("day").format("x"); // Thay thế bằng ngày kết thúc thực tế
     const perPage = 100;
+    if (!inputs.currentPage){
+      const res = await Listing.find({ date: { ">=": startDate, "<=": endDate } })
+      return exits.success({
+        data: res,
+        totalPage: 1,
+        currentPage: 1,
+      });
+    }
 
     // Trang hiện tại bạn muốn lấy dữ liệu (ví dụ: trang 2)
     const currentPage = inputs.currentPage;
@@ -34,16 +42,16 @@ module.exports = {
     const searchCondition = {
       or: [
         { link_listing: { contains: inputs.search } },
-        { sku: { contains: inputs.search } },
+        { SKU: { contains: inputs.search } },
         // Thêm các điều kiện tìm kiếm khác ở đây nếu cần
       ],
-      data: { ">=": startDate, "<=": endDate },
+      date: { ">=": startDate, "<=": endDate },
     };
     // Lệnh query để lấy dữ liệu từ model Listing
     await Listing.find(
       inputs?.search
         ? searchCondition
-        : { data: { ">=": startDate, "<=": endDate } }
+        : { date: { ">=": startDate, "<=": endDate } }
     )
       .limit(perPage)
       .skip(startIndex)

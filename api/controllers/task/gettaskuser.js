@@ -14,7 +14,6 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     const today = moment().startOf('day').format('x'); // Lấy ngày hôm nay
-    console.log(today)
 
     await Task.find({
       or: [
@@ -32,7 +31,6 @@ module.exports = {
         },
       ],
     }).exec((err, tasks) => {
-      console.log(tasks);
       if (err) {
         exits.success({ status: "fail", message: "Lổi không xác định" });
       }
