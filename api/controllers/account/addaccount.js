@@ -6,7 +6,6 @@ module.exports = {
   description: "Index home.",
 
   inputs: {
-    id: { type: "string" },
     account: { type: "string" },
     iduser: { type: "string" },
     name: { type: "string" },
@@ -17,12 +16,24 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      await Account.create(inputs)
+      const account = inputs.account;
+      const exitsAccount = await Account.find({
+        account: account.toLowerCase(),
+      });
+
+      if (exitsAccount?.[0]) {
+        return exits.success({
+          message: "Đã tồn tại Account này rồi!",
+          status: "fail",
+        });
+      }
+      await Account.create({ ...inputs, account: account.toLowerCase() });
       return exits.success({
         message: "Thêm Account thành công!",
         status: "success",
       });
     } catch (e) {
+      console.log(e);
       return exits.success({
         message: "Lổi không xác định!",
         status: "fail",
