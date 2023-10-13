@@ -1,5 +1,6 @@
 var DomParser = require("dom-parser");
-const moment = require("moment/moment");
+const moment = require('moment-timezone');
+moment.tz.setDefault('Asia/Ho_Chi_Minh');
 
 module.exports = {
   friendlyName: "Index",
