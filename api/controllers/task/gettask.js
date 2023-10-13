@@ -54,7 +54,7 @@ module.exports = {
         date: { ">=": startDate, "<=": endDate },
       });
       return exits.success({
-        data: res,
+        data: res.reverse(),
         totalPage: 1,
         currentPage: 1,
       });
@@ -103,13 +103,13 @@ module.exports = {
             { length: listings.length },
             (_, index) => startIndex + index + 1
           );
-
+          const datares = listings.map((listing, index) => ({
+            ...listing,
+            stt: sttArray[index],
+          }))
           // Trả về kết quả cho client
           return exits.success({
-            data: listings.map((listing, index) => ({
-              ...listing,
-              stt: sttArray[index],
-            })),
+            data: datares.reverse(),
             totalPage: totalPages,
             currentPage: currentPage,
           });

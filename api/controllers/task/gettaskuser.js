@@ -35,7 +35,7 @@ module.exports = {
         exits.success({ status: "fail", message: "Lổi không xác định" });
       }
       // Xử lý dữ liệu tasks ở đây
-      return exits.success(tasks);
+      return exits.success(tasks.reverse());
     });
   },
   
