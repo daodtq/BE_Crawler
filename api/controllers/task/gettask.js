@@ -42,7 +42,7 @@ module.exports = {
       type: "string",
     },
     status: {
-      type: "boolean",
+      type: "string",
     },
   },
 
@@ -67,14 +67,14 @@ module.exports = {
     // Trang hiện tại bạn muốn lấy dữ liệu (ví dụ: trang 2)
     const currentPage = inputs.currentPage;
     const statusSearch =
-      inputs.status == true || inputs.status == false
+      inputs.status == "true" || inputs.status == "false"
         ? { date: { ">=": startDate, "<=": endDate }, status: inputs.status }
         : { date: { ">=": startDate, "<=": endDate } };
 
     // Tính chỉ số bắt đầu và kết thúc dựa trên trang hiện tại và số dòng trên mỗi trang
     const startIndex = (currentPage - 1) * perPage;
     const searchCondition =
-      inputs.status == true || inputs.status == false
+      inputs.status == "true" || inputs.status == "false"
         ? {
             or: [
               { task: { contains: inputs.search } },
