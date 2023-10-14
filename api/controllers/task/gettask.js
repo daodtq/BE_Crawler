@@ -19,8 +19,8 @@
 // };
 
 var DomParser = require("dom-parser");
-const moment = require('moment-timezone');
-moment.tz.setDefault('Asia/Ho_Chi_Minh');
+const moment = require("moment-timezone");
+moment.tz.setDefault("Asia/Ho_Chi_Minh");
 
 module.exports = {
   friendlyName: "Index",
@@ -41,19 +41,23 @@ module.exports = {
     search: {
       type: "string",
     },
+    status: {
+      type: "boolean",
+    },
   },
 
   exits: {},
 
   fn: async function (inputs, exits) {
-    // iduser: inputs.iduser
     const startDate = moment(inputs.startDate).startOf("day").format("x"); // Thay thế bằng ngày bắt đầu thực tế
     const endDate = moment(inputs.endDate).endOf("day").format("x"); // Thay thế bằng ngày kết thúc thực tế
     const perPage = 100;
     if (!inputs.currentPage) {
       const res = await Task.find({
         date: { ">=": startDate, "<=": endDate },
+        status: inputs.status,
       });
+
       return exits.success({
         data: res.reverse(),
         totalPage: 1,
@@ -62,23 +66,34 @@ module.exports = {
     }
     // Trang hiện tại bạn muốn lấy dữ liệu (ví dụ: trang 2)
     const currentPage = inputs.currentPage;
+    const statusSearch =
+      inputs.status == true || inputs.status == false
+        ? { date: { ">=": startDate, "<=": endDate }, status: inputs.status }
+        : { date: { ">=": startDate, "<=": endDate } };
 
     // Tính chỉ số bắt đầu và kết thúc dựa trên trang hiện tại và số dòng trên mỗi trang
     const startIndex = (currentPage - 1) * perPage;
-    const searchCondition = {
-      or: [
-        { task: { contains: inputs.search } },
-        { name: { contains: inputs.search } },
-        // Thêm các điều kiện tìm kiếm khác ở đây nếu cần
-      ],
-      date: { ">=": startDate, "<=": endDate },
-    };
+    const searchCondition =
+      inputs.status == true || inputs.status == false
+        ? {
+            or: [
+              { task: { contains: inputs.search } },
+              { name: { contains: inputs.search } },
+              // Thêm các điều kiện tìm kiếm khác ở đây nếu cần
+            ],
+            date: { ">=": startDate, "<=": endDate },
+            status: inputs.status,
+          }
+        : {
+            or: [
+              { task: { contains: inputs.search } },
+              { name: { contains: inputs.search } },
+              // Thêm các điều kiện tìm kiếm khác ở đây nếu cần
+            ],
+            date: { ">=": startDate, "<=": endDate },
+          };
     // Lệnh query để lấy dữ liệu từ model Listing
-    await Task.find(
-      inputs?.search
-        ? searchCondition
-        : { date: { ">=": startDate, "<=": endDate } }
-    )
+    await Task.find(inputs?.search ? searchCondition : statusSearch)
       .limit(perPage)
       .skip(startIndex)
       .exec(async (err, listings) => {
@@ -86,11 +101,8 @@ module.exports = {
           // Xử lý lỗi nếu có
           return exits.success(err);
         }
-
         // Lấy tổng số dòng dữ liệu dựa trên điều kiện tìm kiếm
-        await Task.count({
-          date: { ">=": startDate, "<=": endDate },
-        }).exec((countErr, totalCount) => {
+        await Task.count(statusSearch).exec((countErr, totalCount) => {
           if (countErr) {
             // Xử lý lỗi nếu có
             return exits.success(countErr);
@@ -107,7 +119,7 @@ module.exports = {
           const datares = listings.map((listing, index) => ({
             ...listing,
             stt: sttArray[index],
-          }))
+          }));
           // Trả về kết quả cho client
           return exits.success({
             data: datares.reverse(),
