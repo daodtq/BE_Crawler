@@ -30,6 +30,8 @@ module.exports = {
     const startDate = moment(inputs.startDate).startOf("day").format("x"); // Thay thế bằng ngày bắt đầu thực tế
     const endDate = moment(inputs.endDate).endOf("day").format("x"); // Thay thế bằng ngày kết thúc thực tế
     const perPage = 100;
+    const account = await Account.find()
+    console.log(account)
 
     // Trang hiện tại bạn muốn lấy dữ liệu (ví dụ: trang 2)
     const currentPage = inputs.currentPage;
@@ -77,6 +79,14 @@ module.exports = {
             (_, index) => startIndex + index + 1
           );
 
+          for(_listing of listings){
+            for(_account of account){
+              if(_account.id == _listing.idaccount){
+                _listing.account = _account.account
+                break
+              }
+            }
+          }
           // Trả về kết quả cho client
           return exits.success({
             data: listings.map((listing, index) => ({

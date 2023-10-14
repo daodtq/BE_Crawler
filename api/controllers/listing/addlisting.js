@@ -28,6 +28,7 @@ module.exports = {
     iduser: { type: "string" },
     name: { type: "string" },
     link_listing: { type: "string" },
+    idaccount: { type: "string" },
     SKU: { type: "string" },
     link_url: { type: "string" },
     date: { type: "number" },

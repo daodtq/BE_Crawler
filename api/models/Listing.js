@@ -10,6 +10,7 @@ module.exports = {
       id: { type: "string" },
       username: { type: 'string', required: true },
       iduser: { type: 'string', required: true },
+      idaccount: { type: 'string', required: true },
       name: { type: 'string', required: true },
       link_listing: { type: 'string', required: true },
       SKU: { type: 'string' },

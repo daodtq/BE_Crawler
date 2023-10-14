@@ -1,6 +1,6 @@
 var DomParser = require("dom-parser");
-const moment = require('moment-timezone');
-moment.tz.setDefault('Asia/Ho_Chi_Minh');
+const moment = require("moment-timezone");
+moment.tz.setDefault("Asia/Ho_Chi_Minh");
 
 module.exports = {
   friendlyName: "Index",
@@ -26,8 +26,19 @@ module.exports = {
     const startDate = moment(inputs.startDate).startOf("day").format("x"); // Thay thế bằng ngày bắt đầu thực tế
     const endDate = moment(inputs.endDate).endOf("day").format("x"); // Thay thế bằng ngày kết thúc thực tế
     const perPage = 100;
-    if (!inputs.currentPage){
-      const res = await Listing.find({ date: { ">=": startDate, "<=": endDate } })
+    const account = await Account.find();
+    if (!inputs.currentPage) {
+      const res = await Listing.find({
+        date: { ">=": startDate, "<=": endDate },
+      });
+      for(_listing of res){
+        for(_account of account){
+          if(_account.id == _listing.idaccount){
+            _listing.account = _account.account
+            break
+          }
+        }
+      }
       return exits.success({
         data: res,
         totalPage: 1,
@@ -79,6 +90,14 @@ module.exports = {
             { length: listings.length },
             (_, index) => startIndex + index + 1
           );
+          for (_listing of listings) {
+            for (_account of account) {
+              if (_account.id == _listing.idaccount) {
+                _listing.account = _account.account;
+                break;
+              }
+            }
+          }
 
           // Trả về kết quả cho client
           return exits.success({
