@@ -54,11 +54,11 @@ async function processSpreadsheet(spreadsheetId) {
       await Sheet.findOrCreate(
         {
           name: spreadsheetName,
-          valuedate: moment(dateStr, values[0][1]).format("MM/YYYY"),
+          valuedate: moment(values[0][1],'DD/MM' ).format("MM/YYYY"),
         },
         {
           data: values,
-          valuedate: moment(dateStr, values[0][1]).format("MM/YYYY"),
+          valuedate: moment(values[0][1], 'DD/MM').format("MM/YYYY"),
           name: spreadsheetName,
         }
       );
