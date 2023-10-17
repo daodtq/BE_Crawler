@@ -37,7 +37,7 @@ async function processSpreadsheet(spreadsheetId) {
       spreadsheetId: spreadsheetId,
     });
     const spreadsheetProperties = response.data.properties;
-    const spreadsheetName = spreadsheetProperties.title;
+    const spreadsheetName = spreadsheetProperties.title.replace("EGEAD - EB - ", "");
     console.log(`Spreadsheet Name for ID ${spreadsheetId}: ${spreadsheetName}`);
 
     // Đoạn code để lấy dữ liệu từ "Tổng quan" ở đây
