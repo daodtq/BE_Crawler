@@ -37,7 +37,10 @@ async function processSpreadsheet(spreadsheetId) {
       spreadsheetId: spreadsheetId,
     });
     const spreadsheetProperties = response.data.properties;
-    const spreadsheetName = spreadsheetProperties.title.replace("EGEAD - EB - ", "");
+    const spreadsheetName = spreadsheetProperties.title.replace(
+      "EGEAD - EB - ",
+      ""
+    );
     console.log(`Spreadsheet Name for ID ${spreadsheetId}: ${spreadsheetName}`);
 
     // Đoạn code để lấy dữ liệu từ "Tổng quan" ở đây
@@ -51,17 +54,42 @@ async function processSpreadsheet(spreadsheetId) {
     });
     const values = dataResponse.data.values;
     if (values) {
-      await Sheet.updateOrCreate(
-        {
-          name: spreadsheetName,
-          valuedate: moment(values[0][1],'DD/MM' ).format("MM/YYYY"),
-        },
-        {
-          data: values,
-          valuedate: moment(values[0][1], 'DD/MM').format("MM/YYYY"),
-          name: spreadsheetName,
+      await Sheet.findOne({
+        name: spreadsheetName,
+        valuedate: moment(values[0][1], "DD/MM").format("MM/YYYY"),
+      }).exec(async function (err, record) {
+        if (err) {
+          // Handle the error
+        } else if (record) {
+          // If a record is found, update it
+          await Sheet.update({
+            name: spreadsheetName,
+            valuedate: moment(values[0][1], "DD/MM").format("MM/YYYY"),
+          }).set({
+            data: values,
+            valuedate: moment(values[0][1], "DD/MM").format("MM/YYYY"),
+            name: spreadsheetName,
+          });
+        } else {
+          // If no record is found, create a new one
+          await Sheet.create({
+            data: values,
+            valuedate: moment(values[0][1], "DD/MM").format("MM/YYYY"),
+            name: spreadsheetName,
+          });
         }
-      );
+      });
+      // await Sheet.updateOrCreate(
+      //   {
+      //     name: spreadsheetName,
+      //     valuedate: moment(values[0][1], "DD/MM").format("MM/YYYY"),
+      //   },
+      //   {
+      //     data: values,
+      //     valuedate: moment(values[0][1], "DD/MM").format("MM/YYYY"),
+      //     name: spreadsheetName,
+      //   }
+      // );
     }
   } catch (err) {
     console.error("Error:", err.message);
