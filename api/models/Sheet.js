@@ -9,7 +9,7 @@ module.exports = {
     attributes: {
       id: { type: "string" },
       data: {type: "json"},
-      valuedate: {type: "json"},
+      valuedate: {type: "string"},
       name: {type: "string"}
     },
   };
