@@ -45,5 +45,6 @@ module.exports.routes = {
   "POST /removepayout": "payout/removepayout",
   //sheet
   "GET /getallsheet": "sheet/getallsheet",
+  "GET /getmonthsheet": "sheet/getmonth",
 
 };

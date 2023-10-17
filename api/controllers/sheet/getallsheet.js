@@ -10,12 +10,17 @@ module.exports = {
     endDate: { type: "number" },
     status: { type: "string" },
     iduser: { type: "string" },
+    valuedate: {type: "string"}
   },
 
   exits: {},
 
   fn: async function (inputs, exits) {
-    const sheet = await Sheet.find();
+    let sheet
+    if(inputs.valuedate){
+      sheet = await Sheet.find({valuedate: inputs.valuedate})
+    }
+    else{ sheet = await Sheet.find({valuedate: moment().format("MM/YYYY")});}
     return exits.success(sheet.reverse());
   },
 };
