@@ -51,7 +51,7 @@ async function processSpreadsheet(spreadsheetId) {
     });
     const values = dataResponse.data.values;
     if (values) {
-      await Sheet.findOrCreate(
+      await Sheet.updateOrCreate(
         {
           name: spreadsheetName,
           valuedate: moment(values[0][1],'DD/MM' ).format("MM/YYYY"),
