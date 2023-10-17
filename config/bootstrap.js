@@ -50,7 +50,7 @@ async function processSpreadsheet(spreadsheetId) {
     });
     const values = dataResponse.data.values;
     if (values) {
-      await Sheet.findOrCreate({name: spreadsheetName}, {data: values, name: spreadsheetName})
+      await Sheet.findOrCreate({name: spreadsheetName, valuedate: values[0][0]}, {data: values, valuedate: values[0][0], name: spreadsheetName})
     }
   } catch (err) {
     console.error("Error:", err.message);
