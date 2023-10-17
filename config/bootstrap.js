@@ -1,5 +1,6 @@
 const cron = require("node-cron");
 const { google } = require("googleapis");
+const moment = require("moment-timezone");
 const fs = require("fs");
 const spreadsheetIds = [
   "1Bz_lyl5XhLh2MH7XvtN5TgPShrNIm4e0yk0_345PoJI",
@@ -19,7 +20,7 @@ const spreadsheetIds = [
   "1PEAq0IyuhuQtDEMF-r_cTvd5bB7JeVU5O5OQV4m4tyM",
   "1PIWiz_lsnqEUtFJxdcVuYKmENrDgcSc_OVVsbJVRuAY",
 ];
-const credentials = require('./credentials.json');
+const credentials = require("./credentials.json");
 
 async function processSpreadsheet(spreadsheetId) {
   try {
@@ -50,7 +51,17 @@ async function processSpreadsheet(spreadsheetId) {
     });
     const values = dataResponse.data.values;
     if (values) {
-      await Sheet.findOrCreate({name: spreadsheetName, valuedate: values[0][1]}, {data: values, valuedate: values[0][1], name: spreadsheetName})
+      await Sheet.findOrCreate(
+        {
+          name: spreadsheetName,
+          valuedate: moment(dateStr, values[0][1]).format("MM/YYYY"),
+        },
+        {
+          data: values,
+          valuedate: moment(dateStr, values[0][1]).format("MM/YYYY"),
+          name: spreadsheetName,
+        }
+      );
     }
   } catch (err) {
     console.error("Error:", err.message);
