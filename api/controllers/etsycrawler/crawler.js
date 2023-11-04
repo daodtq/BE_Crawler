@@ -107,7 +107,7 @@ module.exports = {
                     description = $(descriptionSelector).text().trim();
                     image = [];
                     $(imageSelector).each((index, element) => {
-                        let img = $(element).attr("src") || $(element).attr("data-src-zoom-image");
+                        let img = $(element).attr("data-src-zoom-image");
                         image.push(img);
                     });
 
