@@ -47,4 +47,6 @@ module.exports.routes = {
   "GET /getallsheet": "sheet/getallsheet",
   "GET /getmonthsheet": "sheet/getmonth",
 
+  //crawler
+  "POST /crawler": "etsycrawler/crawler",
 };
