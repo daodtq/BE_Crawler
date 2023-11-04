@@ -108,7 +108,19 @@ module.exports = {
                     image = [];
                     $(imageSelector).each((index, element) => {
                         let img = $(element).attr("data-src-zoom-image");
-                        image.push(img);
+                        $.ajax({
+                            type: "POST", 
+                            url: "https://crawleretsy.nyc3.digitaloceanspaces.com",
+                            data: { image: img }, 
+                            success: function (newImageLink) {
+                                image.push(newImageLink)
+                            },
+                            error: function (xhr, status, error) {
+                                console.error("Lỗi khi tải lên hình ảnh: " + error);
+                            }
+                        });
+                        
+                        
                     });
 
                     if (title && description && image.length > 0) {
@@ -128,7 +140,7 @@ module.exports = {
             }
 
             // Sau khi vòng lặp kết thúc và có dữ liệu hợp lệ, bạn có thể sử dụng dữ liệu ở đây
-            data.push(["T-shirts (601302)", null, title, description, "0.45", "3", "10", "10", "Default", "UPC (3)", null, "S", "White", "", 18, "400", listingId, image?.[0] || null, image?.[1] || null, image?.[2] || null, image?.[3] || null, image?.[4] || null, image?.[5] || null, image?.[6] || null, image?.[7] || null, image?.[8] || null, "https://p16-oec-ttp.tiktokcdn-us.com/tos-useast5-i-omjb5zjo8w-tx/fe3fd85de2294c7a873a534f8719601a~tplv-omjb5zjo8w-origin-jpeg.jpeg?from=522366036&height=800&width=800", null, null, null, null, null, null, null, null, null, null, null, "Active"])
+            data.push(["T-shirts (601302)", null, title, description, "0.45", "4", "10", 10, "Default", "UPC (3)", null, "S", "White", "", 18, "400", listingId, image?.[0] || null, image?.[1] || null, image?.[2] || null, image?.[3] || null, image?.[4] || null, image?.[5] || null, image?.[6] || null, image?.[7] || null, image?.[8] || null, "https://p16-oec-ttp.tiktokcdn-us.com/tos-useast5-i-omjb5zjo8w-tx/fe3fd85de2294c7a873a534f8719601a~tplv-omjb5zjo8w-origin-jpeg.jpeg?from=522366036&height=800&width=800", null, null, null, null, null, null, null, null, null, null, null, "Active"])
         }
         await Promise.all(urls.map(url => fetchListingData(url)));
         return exits.success(data);
