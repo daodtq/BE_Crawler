@@ -108,7 +108,15 @@ module.exports = {
                     image = [];
                     $(imageSelector).each((index, element) => {
                         let img = $(element).attr("data-src-zoom-image");
-                        image.push(img);
+                        fetch(img)
+                            .then(response => {
+                                if (response.status === 200) {
+                                    image.push(img);
+                                } 
+                            })
+                            .catch(error => {
+                                console.error('Lỗi khi kiểm tra URL ảnh:', error);
+                            });
                     });
 
                     if (title && description && image.length > 0) {
