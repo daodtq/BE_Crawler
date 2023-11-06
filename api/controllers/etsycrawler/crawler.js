@@ -19,7 +19,7 @@ module.exports = {
     fn: async function (inputs, exits) {
         const { urls } = inputs;
         const data = [];
-        const stt = 0
+        let stt = 0
         const fetchListingData = async (url) => {
             let title, description, image, listingId;
             let retries = 3; // Số lần thử lại tối đa
