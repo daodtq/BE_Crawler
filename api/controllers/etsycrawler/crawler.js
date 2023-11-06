@@ -1,11 +1,24 @@
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
+const moment = require('moment');
+const { PutObjectCommand, S3Client, PutObjectAclCommand } = require('@aws-sdk/client-s3');
 const axios = require('axios');
 const headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36",
     "Referer": "https://www.etsy.com/",
     // Add other headers as necessary
 }
+const s3Client = new S3Client({
+    endpoint: "https://nyc3.digitaloceanspaces.com", // Find your endpoint in the control panel, under Settings. Prepend "https://".
+    forcePathStyle: false, // Configures to use subdomain/virtual calling format.
+    region: "nyc3", // Must be "us-east-1" when creating new Spaces. Otherwise, use the region in your endpoint (e.g. nyc3).
+    credentials: {
+        accessKeyId: "DO00MBJ4Y3ELNMAXPWPN", // Access key pair. You can create access key pairs using the control panel or API.
+        secretAccessKey: "s0/8AOiTHG3Ixc6Ay94L7SSfkNd4odLtiRgVxfIEbAU" // Secret access key defined through an environment variable.
+    }
+});
+
+
 
 module.exports = {
     friendlyName: "Index",
@@ -60,20 +73,35 @@ module.exports = {
                     title = $(titleSelector).text().trim();
                     description = $(descriptionSelector).text().trim();
                     image = [];
-                    $(imageSelector).each((index, element) => {
-                        let img = $(element).attr("data-src-zoom-image");
-                        axios.post('https://crawleretsy.nyc3.digitaloceanspaces.com', { image: img })
-                        .then((response) => {
-                            // Xử lý phản hồi thành công
-                            let newImageLink = response.data;
-                            image.push(newImageLink)
-                        })
-                        .catch((error) => {
-                            console.error("Lỗi khi tải lên hình ảnh: " + error);
-                        });
-                        
-                        
-                    });
+                    const imageElements = $(imageSelector);
+                    for (let index = 0; index < imageElements.length; index++) {
+                        let img = $(imageElements[index]).attr("data-src-zoom-image");
+                        // try {
+                        //     const unixTimestamp = moment().unix();
+                        //     const response = await axios.get(img, { responseType: 'arraybuffer' });
+                        //     // Step 3: Define the parameters for the object you want to upload.
+                        //     const params = {
+                        //         Bucket: "crawleretsy", // The path to the directory you want to upload the object to, starting with your Space name.
+                        //         Key: `${unixTimestamp}${index}.jpg`, // Object key, referenced whenever you want to access this file later.
+                        //         Body: Buffer.from(response.data),
+                        //         ContentType: "image/jpeg"
+                        //     };
+                        //     await s3Client.send(new PutObjectCommand(params));
+                        //     const aclParams = {
+                        //         Bucket: "crawleretsy", // Thay thế bằng tên Space của bạn.
+                        //         Key: `${unixTimestamp}${index}.jpg`, // Tên tệp hình ảnh đã tải lên.
+                        //         ACL: 'public-read', // Đặt quyền truy cập là công khai
+                        //     };
+
+                        //     // Thực hiện cấu hình ACL
+                        //     await s3Client.send(new PutObjectAclCommand(aclParams));
+                        //     image.push(`https://crawleretsy.nyc3.digitaloceanspaces.com/${unixTimestamp}${index}.jpg`);
+                        // } catch (err) {
+                        //     console.error("Lỗi khi tải lên hình ảnh:", err);
+                        // }
+                        image.push(img)
+                    }
+                    console.log(title, image)
 
                     if (title && description && image.length > 0) {
                         // Nếu có title, description và ít nhất một hình ảnh, thoát khỏi vòng lặp
@@ -92,7 +120,7 @@ module.exports = {
             }
 
             // Sau khi vòng lặp kết thúc và có dữ liệu hợp lệ, bạn có thể sử dụng dữ liệu ở đây
-            data.push(["T-shirts (601302)", null, title, description, "0.45", "4", "10", 10, "Default", "UPC (3)", null, "S", "White", "", 18, "400", listingId, image?.[0] || null, image?.[1] || null, image?.[2] || null, image?.[3] || null, image?.[4] || null, image?.[5] || null, image?.[6] || null, image?.[7] || null, image?.[8] || null, "https://p16-oec-ttp.tiktokcdn-us.com/tos-useast5-i-omjb5zjo8w-tx/fe3fd85de2294c7a873a534f8719601a~tplv-omjb5zjo8w-origin-jpeg.jpeg?from=522366036&height=800&width=800", null, null, null, null, null, null, null, null, null, null, null, "Active"])
+            data.push(["T-shirts (601302)", null, title, description, "0.45", "4", "10", 10, "Default", "UPC (3)", null, "S", "White", null, 18, "400", listingId, image?.[0] || null, image?.[1] || null, image?.[2] || null, image?.[3] || null, image?.[4] || null, image?.[5] || null, image?.[6] || null, image?.[7] || null, image?.[8] || null, "https://crawleretsy.nyc3.digitaloceanspaces.com/fe3fd85de2294c7a873a534f8719601a~tplv-omjb5zjo8w-origin-jpeg.jpeg", null, null, null, null, null, null, null, null, null, null, null, "Active"])
         }
         await Promise.all(urls.map(url => fetchListingData(url)));
         return exits.success(data);
