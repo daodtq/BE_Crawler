@@ -7,16 +7,6 @@ const headers = {
     "Referer": "https://www.etsy.com/",
     // Add other headers as necessary
 }
-const s3Client = new S3Client({
-    endpoint: "https://nyc3.digitaloceanspaces.com", // Find your endpoint in the control panel, under Settings. Prepend "https://".
-    forcePathStyle: false, // Configures to use subdomain/virtual calling format.
-    region: "nyc3", // Must be "us-east-1" when creating new Spaces. Otherwise, use the region in your endpoint (e.g. nyc3).
-    credentials: {
-        accessKeyId: "DO00MBJ4Y3ELNMAXPWPN", // Access key pair. You can create access key pairs using the control panel or API.
-        secretAccessKey: "s0/8AOiTHG3Ixc6Ay94L7SSfkNd4odLtiRgVxfIEbAU" // Secret access key defined through an environment variable.
-    }
-});
-
 
 
 module.exports = {
