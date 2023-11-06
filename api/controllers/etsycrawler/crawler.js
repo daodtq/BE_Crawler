@@ -73,34 +73,10 @@ module.exports = {
                     title = $(titleSelector).text().trim();
                     description = $(descriptionSelector).text().trim();
                     image = [];
-                    const imageElements = $(imageSelector);
-                    for (let index = 0; index < imageElements.length; index++) {
-                        let img = $(imageElements[index]).attr("data-src-zoom-image");
-                        // try {
-                        //     const unixTimestamp = moment().unix();
-                        //     const response = await axios.get(img, { responseType: 'arraybuffer' });
-                        //     // Step 3: Define the parameters for the object you want to upload.
-                        //     const params = {
-                        //         Bucket: "crawleretsy", // The path to the directory you want to upload the object to, starting with your Space name.
-                        //         Key: `${unixTimestamp}${index}.jpg`, // Object key, referenced whenever you want to access this file later.
-                        //         Body: Buffer.from(response.data),
-                        //         ContentType: "image/jpeg"
-                        //     };
-                        //     await s3Client.send(new PutObjectCommand(params));
-                        //     const aclParams = {
-                        //         Bucket: "crawleretsy", // Thay thế bằng tên Space của bạn.
-                        //         Key: `${unixTimestamp}${index}.jpg`, // Tên tệp hình ảnh đã tải lên.
-                        //         ACL: 'public-read', // Đặt quyền truy cập là công khai
-                        //     };
-
-                        //     // Thực hiện cấu hình ACL
-                        //     await s3Client.send(new PutObjectAclCommand(aclParams));
-                        //     image.push(`https://crawleretsy.nyc3.digitaloceanspaces.com/${unixTimestamp}${index}.jpg`);
-                        // } catch (err) {
-                        //     console.error("Lỗi khi tải lên hình ảnh:", err);
-                        // }
+                    $(imageSelector).each((index, element) => {
+                        let img = $(element).attr("data-src-zoom-image");
                         image.push(img)
-                    }
+                    })
                     console.log(title, image)
 
                     if (title && description && image.length > 0) {
