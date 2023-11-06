@@ -1,7 +1,6 @@
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
 const moment = require('moment');
-const { PutObjectCommand, S3Client, PutObjectAclCommand } = require('@aws-sdk/client-s3');
 const axios = require('axios');
 const headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36",
