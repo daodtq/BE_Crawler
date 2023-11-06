@@ -85,7 +85,7 @@ module.exports = {
             }
 
             // Sau khi vòng lặp kết thúc và có dữ liệu hợp lệ, bạn có thể sử dụng dữ liệu ở đây
-            data.push(["T-shirts (601302)", null, title, description, "0.45", "3", "10", 10, "Default", "UPC (3)", null, "S", "White", null, 18, "400", listingId, image?.[0] || null, image?.[1] || null, image?.[2] || null, image?.[3] || null, image?.[4] || null, image?.[5] || null, image?.[6] || null, image?.[7] || null, image?.[8] || null, "https://crawleretsy.nyc3.digitaloceanspaces.com/fe3fd85de2294c7a873a534f8719601a~tplv-omjb5zjo8w-origin-jpeg.jpeg", null, null, null, null, null, null, null, null, null, null, null, "Active"])
+            data.push(["T-shirts (601302)", null, title, description, "0.45", "3", "10", 10, null, "UPC (3)", null, "S", "White", null, 18, "400", listingId, image?.[0] || null, image?.[1] || null, image?.[2] || null, image?.[3] || null, image?.[4] || null, image?.[5] || null, image?.[6] || null, image?.[7] || null, image?.[8] || null, "https://crawleretsy.nyc3.digitaloceanspaces.com/fe3fd85de2294c7a873a534f8719601a~tplv-omjb5zjo8w-origin-jpeg.jpeg", null, null, null, null, null, null, null, null, null, null, null, "Active"])
         }
         await Promise.all(urls.map(url => fetchListingData(url)));
         return exits.success(data);
