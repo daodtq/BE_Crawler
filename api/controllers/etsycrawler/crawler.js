@@ -56,10 +56,14 @@ module.exports = {
                     const body = await response.text();
                     const $ = await cheerio.load(body);
                     listingId = $('[data-listing-id]').attr('data-listing-id');
-                    const titleSelector = "#listing-page-cart > div:nth-child(4) > h1";
+                    let titleSelector = "#listing-page-cart > div:nth-child(4) > h1";
                     const descriptionSelector = "#wt-content-toggle-product-details-read-more > p";
                     const imageSelector = ".carousel-image";
                     title = $(titleSelector).text().trim();
+                    if (!title) {
+                        titleSelector = "#listing-page-cart > div.wt-mb-xs-1 > h1";
+                        title = $(titleSelector).text().trim();
+                    }
                     description = $(descriptionSelector).text().trim();
                     image = [];
                     $(imageSelector).each((index, element) => {
