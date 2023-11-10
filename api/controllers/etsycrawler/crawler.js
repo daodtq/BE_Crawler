@@ -8,7 +8,6 @@ const headers = {
     // Add other headers as necessary
 }
 
-
 module.exports = {
     friendlyName: "Index",
     description: "Index home",
@@ -33,20 +32,13 @@ module.exports = {
                             "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
                             "accept-language": "vi,en;q=0.9",
                             "cache-control": "max-age=0",
-                            "sec-ch-device-memory": "8",
-                            "sec-ch-ua": "\"Google Chrome\";v=\"119\", \"Chromium\";v=\"119\", \"Not?A_Brand\";v=\"24\"",
-                            "sec-ch-ua-arch": "\"x86\"",
-                            "sec-ch-ua-full-version-list": "\"Google Chrome\";v=\"119.0.6045.105\", \"Chromium\";v=\"119.0.6045.105\", \"Not?A_Brand\";v=\"24.0.0.0\"",
-                            "sec-ch-ua-mobile": "?0",
-                            "sec-ch-ua-model": "\"\"",
-                            "sec-ch-ua-platform": "\"Windows\"",
                             "sec-fetch-dest": "document",
                             "sec-fetch-mode": "navigate",
                             "sec-fetch-site": "none",
                             "sec-fetch-user": "?1",
                             "upgrade-insecure-requests": "1",
-                            "cookie": "uaid=n-ATjjmPrTz-qwzPzrUDeXSPnXVjZACCVGfuszC6Wqk0MTNFyUopz92pNLci0yXZ36zc2dAvtzg_3NvP1SA1MjGtSqmWAQA.; fve=1698892749.0; _fbp=fb.1.1698892749920.5705227143492975; ua=531227642bc86f3b5fd7103a0c0b4fd6; _gcl_au=1.1.1404246717.1698892751; _ga=GA1.1.535387908.1698892752; lantern=fada988f-6d07-4a44-ac49-2ee41098bacd; _pin_unauth=dWlkPU9UZ3dPVEV4TldFdE1EUXdZeTAwTnpBekxXSTVObU10WmpFM1pEUXhZMk5oTWpsaw; __pdst=c90a8b993fbe414f967a91a5b9870905; _tt_enable_cookie=1; _ttp=ZWrDUlg5mURnIW5Oqk6TfNbflNZ; user_prefs=-MouoA_h2hLX1fXVoCv_3cHtD_ZjZACCVGfusxA6dnq0Umiwi5JOXmlOjo5Sap5uaLCSjhKIAIsYQShcRCwDAA..; last_browse_page=https%3A%2F%2Fwww.etsy.com%2Fshop%2FCuTeesCustomShirts; datadome=fI19yTAn~rVbBrMLDuHLtM5wkq~4RapE_Eo_cwowGaDbJvLJBHrCWitrJrzSpu_ZSaou95lNdmAH6yPDSMDOtWLPmx9MxqrdP7_czX7F1Ll1Oj4~d8_DrOcRG~1tL~b9; _uetsid=012f0320792911ee855229bbd98faa9b; _uetvid=012f33e0792911ee94c769eb9dc5716d; _ga_KR3J610VYM=GS1.1.1699060573.11.0.1699060574.59.0.0; granify.uuid=32949934-910a-450b-ad19-b5dad171e976; granify.new_user.qivBM=false; granify.session.qivBM=-1"
-                        }, referrerPolicy: "strict-origin-when-cross-origin", body: null
+                            "cookie": "uaid=AkovfaFsGGxrMqIJiVB2YXz7JO9jZACCVN9Hj2F0tVJpYmaKkpVSbpinmbFuqolLlktBYUa6aaSxkWWBR5Chi7tuolItAwA.; user_prefs=yKI9KdE-ChiH5yRPnwMGdyinEnhjZACCVN9Hj2F0tFKYn4uSTl5pTo6OUmqebmiwkg5QCCpiBKFwEbEMAA..; fve=1699603171.0; _fbp=fb.1.1699603171961.3431392936605298; last_browse_page=https%3A%2F%2Fwww.etsy.com%2Fshop%2FAbelRucenLake; ua=531227642bc86f3b5fd7103a0c0b4fd6; _gcl_au=1.1.1755311406.1699603175; _ga=GA1.1.217590824.1699603175; _uetsid=16e28a107f9f11ee9f2fcd053bd4f4c2; _uetvid=a380b3e0369411eea45591d5d30cedf6; lantern=5daf979c-62a8-46c6-994a-7c2773420851; _pin_unauth=dWlkPVlqSTFPR0l5WVRZdE9EazJNQzAwTXpRd0xXSTBNREF0T0RSa05XWXhNV1l4WVRBeA; _ga_KR3J610VYM=GS1.1.1699603175.1.0.1699603178.57.0.0; datadome=dnaUfBuve16THyE6g~KILTh5b81sbblzE3IGNuDumTBjpeYyyM6pDfYUmJS8dMJf9LGm7bzGPgQylsKNKByLdGco_714C6fw~Fivhs7wBhV5NePvjOqH08ppRn4ho6M2"
+                          }, referrerPolicy: "strict-origin-when-cross-origin", body: null
                     });
 
                     if (!response.ok) {
