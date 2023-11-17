@@ -21,7 +21,7 @@ module.exports = {
         let stt = 0
         const fetchListingData = async (url) => {
             let title, description, image, listingId;
-            let retries = 3; // Số lần thử lại tối đa
+            let retries = 5; // Số lần thử lại tối đa
 
             while (retries > 0) {
                 try {
@@ -62,7 +62,6 @@ module.exports = {
                         let img = $(element).attr("data-src-zoom-image");
                         image.push(img)
                     })
-                    console.log(title, image)
 
                     if (title && description && image.length > 0) {
                         // Nếu có title, description và ít nhất một hình ảnh, thoát khỏi vòng lặp
@@ -74,7 +73,6 @@ module.exports = {
 
                 retries--;
             }
-
             if (retries === 0) {
                 console.error("Exceeded maximum retries. Unable to fetch valid data.");
                 return;

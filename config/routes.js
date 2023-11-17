@@ -49,4 +49,9 @@ module.exports.routes = {
 
   //crawler
   "POST /crawler": "etsycrawler/crawler",
+  "GET /tiktok": "etsycrawler/getTiktok",
+  "GET /printevaldisney": "etsycrawler/crawlerdisney",
+  "GET /joyboxfactory": "etsycrawler/joyboxfactory",
+  "GET /simplewootovarible": "etsycrawler/simplewootovarible",
+  "GET /link": "etsycrawler/crawlerlink",
 };
