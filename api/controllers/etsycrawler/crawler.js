@@ -19,10 +19,10 @@ module.exports = {
         const { urls } = inputs;
         const data = [];
         let stt = 0
+        let dataError = 0
         const fetchListingData = async (url) => {
             let title, description, image, listingId;
             let retries = 5; // Số lần thử lại tối đa
-
             while (retries > 0) {
                 try {
                     const response = await fetch(url, {
@@ -38,10 +38,11 @@ module.exports = {
                             "sec-fetch-user": "?1",
                             "upgrade-insecure-requests": "1",
                             "cookie": "uaid=AkovfaFsGGxrMqIJiVB2YXz7JO9jZACCVN9Hj2F0tVJpYmaKkpVSbpinmbFuqolLlktBYUa6aaSxkWWBR5Chi7tuolItAwA.; user_prefs=yKI9KdE-ChiH5yRPnwMGdyinEnhjZACCVN9Hj2F0tFKYn4uSTl5pTo6OUmqebmiwkg5QCCpiBKFwEbEMAA..; fve=1699603171.0; _fbp=fb.1.1699603171961.3431392936605298; last_browse_page=https%3A%2F%2Fwww.etsy.com%2Fshop%2FAbelRucenLake; ua=531227642bc86f3b5fd7103a0c0b4fd6; _gcl_au=1.1.1755311406.1699603175; _ga=GA1.1.217590824.1699603175; _uetsid=16e28a107f9f11ee9f2fcd053bd4f4c2; _uetvid=a380b3e0369411eea45591d5d30cedf6; lantern=5daf979c-62a8-46c6-994a-7c2773420851; _pin_unauth=dWlkPVlqSTFPR0l5WVRZdE9EazJNQzAwTXpRd0xXSTBNREF0T0RSa05XWXhNV1l4WVRBeA; _ga_KR3J610VYM=GS1.1.1699603175.1.0.1699603178.57.0.0; datadome=dnaUfBuve16THyE6g~KILTh5b81sbblzE3IGNuDumTBjpeYyyM6pDfYUmJS8dMJf9LGm7bzGPgQylsKNKByLdGco_714C6fw~Fivhs7wBhV5NePvjOqH08ppRn4ho6M2"
-                          }, referrerPolicy: "strict-origin-when-cross-origin", body: null
+                        }, referrerPolicy: "strict-origin-when-cross-origin", body: null
                     });
 
                     if (!response.ok) {
+                        dataError += 1
                         throw new Error(`Request failed with status ${response.status}`);
                     }
 
@@ -75,6 +76,7 @@ module.exports = {
             }
             if (retries === 0) {
                 console.error("Exceeded maximum retries. Unable to fetch valid data.");
+                dataError += 1
                 return;
             }
             stt++
@@ -82,6 +84,6 @@ module.exports = {
             data.push(["T-shirts (601302)", null, title, description, "0.45", "3", "10", 10, null, "UPC (3)", null, "S", "White", null, 18, "50", `${moment().unix()}${stt}`, image?.[0] || null, image?.[1] || null, image?.[2] || null, image?.[3] || null, image?.[4] || null, image?.[5] || null, image?.[6] || null, image?.[7] || null, image?.[8] || null, "https://crawleretsy.nyc3.digitaloceanspaces.com/fe3fd85de2294c7a873a534f8719601a~tplv-omjb5zjo8w-origin-jpeg.jpeg", null, null, null, null, null, null, null, null, null, null, null, "Active"])
         }
         await Promise.all(urls.map(url => fetchListingData(url)));
-        return exits.success(data);
+        return exits.success({data,dataError:`${urls.length - dataError}/${urls.length}`});
     },
 };
