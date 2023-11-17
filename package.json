@@ -18,7 +18,7 @@
     "node-cron": "^3.0.2",
     "node-telegram-bot-api": "^0.61.0",
     "node-tesseract-ocr": "^2.2.1",
-    "puppeteer": "^20.9.0",
+    "puppeteer": "^21.5.1",
     "sails": "^1.5.7",
     "sails-firebase": "^0.1.6",
     "sails-hook-cron": "^3.2.0",
