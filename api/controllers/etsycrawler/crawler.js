@@ -30,7 +30,8 @@ module.exports = {
         let stt = 0
         let dataError = 0
         let i = 2
-        const fetchListingData = async (url) => {
+        const existsTitle = []
+        const fetchListingData = async (url, index) => {
             const generateCookie = () => {
                 const randomIndex = Math.floor(Math.random() * cookieArray.length);
                 return cookieArray[randomIndex];
@@ -55,7 +56,6 @@ module.exports = {
                             "cookie": coookie
                         }, referrerPolicy: "strict-origin-when-cross-origin", body: null
                     });
-                    console.log(coookie)
                     if (!response.ok) {
                         dataError += 1
                         throw new Error(`Request failed with status ${response.status}`);
@@ -73,13 +73,16 @@ module.exports = {
                     }
                     description = $(descriptionSelector).text().trim();
                     image = [];
-                    $(imageSelector).each((index, element) => {
+                    $(imageSelector).each((index1, element) => {
                         let img = $(element).attr("data-src-zoom-image");
                         image.push(img)
                     })
 
                     if (title && description && image.length > 0) {
-                        // Nếu có title, description và ít nhất một hình ảnh, thoát khỏi vòng lặp
+                        if (existsTitle.includes(title)) {
+                            title = `${title} ${index}`
+                        }
+                        existsTitle.push(title)
                         break;
                     }
                 } catch (error) {
@@ -97,7 +100,7 @@ module.exports = {
             // Sau khi vòng lặp kết thúc và có dữ liệu hợp lệ, bạn có thể sử dụng dữ liệu ở đây
             data.push(["T-shirts (601302)", null, title, description, "0.45", "3", "10", 10, null, "UPC (3)", null, "S", "White", null, 18, "50", `${moment().unix()}${stt}`, image?.[0] || null, image?.[1] || null, image?.[2] || null, image?.[3] || null, image?.[4] || null, image?.[5] || null, image?.[6] || null, image?.[7] || null, image?.[8] || null, "https://crawleretsy.nyc3.digitaloceanspaces.com/fe3fd85de2294c7a873a534f8719601a~tplv-omjb5zjo8w-origin-jpeg.jpeg", null, null, null, null, null, null, null, null, null, null, null, "Active"])
         }
-        await Promise.all(urls.map(url => fetchListingData(url)));
+        await Promise.all(urls.map((url, index) => fetchListingData(url, index)));
         return exits.success({ data, dataError: `${urls.length - dataError}/${urls.length}` });
     },
 };
