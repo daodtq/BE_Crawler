@@ -2,6 +2,8 @@ const fetch = require('node-fetch');
 const cheerio = require('cheerio');
 const moment = require('moment');
 const axios = require('axios');
+const bcrypt = require("bcryptjs")
+
 const headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36",
     "Referer": "https://www.etsy.com/",
@@ -23,16 +25,43 @@ module.exports = {
     inputs: {
         urls: { type: "json" },
         category: { type: "string" },
-        price: { type: "number" }
+        price: { type: "number" },
+        time: { type: "number" },
+        hash: { type: "string" },
     },
     exits: {},
     fn: async function (inputs, exits) {
-        const { urls, category, price } = inputs;
+        const { urls, category, price, time, hash } = inputs;
         const data = [];
         let stt = 0
         let dataError = 0
         let i = 2
         const existsTitle = []
+        const fetchUser = async () => {
+            existAccount = await Google.find();
+            for (const _existAccount of existAccount) {
+                const result = await new Promise((resolve, reject) => {
+                    bcrypt.compare(_existAccount.mail, hash, (err, result) => {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(result);
+                        }
+                    });
+                });
+
+                if (result) {
+                    let _time = await Google.findOne({ mail: _existAccount.mail })
+                    _time = _time?.time
+                    if (time == _time) {
+                        return 0; // Thực hiện các hành động sau khi xác thực thành công
+                    } else {
+                        return 1
+                    }
+                }
+            }
+        }
+
         const fetchListingData = async (url, index) => {
             const generateCookie = () => {
                 const randomIndex = Math.floor(Math.random() * cookieArray.length);
@@ -102,9 +131,15 @@ module.exports = {
             // Sau khi vòng lặp kết thúc và có dữ liệu hợp lệ, bạn có thể sử dụng dữ liệu ở đây
             data.push(["T-shirts (601302)", null, title, description, "0.45", "3", "10", 10, null, "UPC (3)", null, "S", "White", null, 18, "50", `${moment().unix()}${stt}`, image?.[0] || null, image?.[1] || null, image?.[2] || null, image?.[3] || null, image?.[4] || null, image?.[5] || null, image?.[6] || null, image?.[7] || null, image?.[8] || null, "https://crawleretsy.nyc3.digitaloceanspaces.com/fe3fd85de2294c7a873a534f8719601a~tplv-omjb5zjo8w-origin-jpeg.jpeg", null, null, null, null, null, null, null, null, null, null, null, "Active"])
         }
-        await Promise.all(urls.map((url, index) => fetchListingData(url, index)));
-        await ListTiktok.create({ type: category, data, price })
-        return exits.success({ data, dataError: `${urls.length - dataError}/${urls.length}` });
+        const res = await fetchUser()
+        if (res != 0) {
+            return exits.success({ status: 1 });
+        } else {
+            await Promise.all(urls.map((url, index) => fetchListingData(url, index)));
+            await ListTiktok.create({ type: category, data, price })
+            return exits.success({ data, dataError: `${urls.length - dataError}/${urls.length}` });
+        }
+
     },
 };
 
