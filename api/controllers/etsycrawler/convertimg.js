@@ -55,7 +55,7 @@ module.exports = {
         const fetchListingData = async () => {
             for (let url of urls.split(',')) {
                 const newUrl = await uploadImage(url.replace(/\s/g, ''))
-                data.push(newUrl)
+                data.push(newUrl)   
             }
         }
         await fetchListingData()
