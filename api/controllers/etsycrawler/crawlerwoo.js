@@ -15,7 +15,7 @@ module.exports = {
         const productLinks = [];
         let allData = []
         const fetchListingData = async () => {
-            for (let i = 1; i <= 2; i++) {
+            for (let i = 1; i <= 1; i++) {
                 const urlmain = `https://yourjewelleryshop.nz/product-category/other-personalised-gifts/lamps/page/${i}/`
                 const response = await fetch(urlmain, {
                     method: 'GET',

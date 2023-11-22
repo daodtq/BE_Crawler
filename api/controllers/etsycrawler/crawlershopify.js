@@ -15,20 +15,18 @@ module.exports = {
         const productLinks = [];
         let allData = []
         const fetchListingData = async () => {
-            for (let i = 1; i <= 2; i++) {
-                const urlmain = `https://yourjewelleryshop.nz/product-category/other-personalised-gifts/lamps/page/${i}/`
+            for (let i = 1; i <= 1; i++) {
+                const urlmain = `https://amomentofnow.com/search?q=enamel+mug&options%5Bprefix%5D=last&type=product`
                 const response = await fetch(urlmain, {
                     method: 'GET',
                 });
                 const body = await response.text();
                 const $ = cheerio.load(body);
-                const _resP = $('a.woocommerce-LoopProduct-link.woocommerce-loop-product__link');
+                const _resP = $('#main-collection-product-grid > li > div > div > div.card-product > div > div.card-media.card-media--portrait.media--hover-effect.has-compare.media--loading-effect > a');
 
                 _resP.each((index, element) => {
                     const product_link = $(element).attr('href');
-                    if (!product_link.includes("ref=sc_gallery")) {
-                        productLinks.push(`${product_link}`);
-                    }
+                    productLinks.push(`https://amomentofnow.com/${product_link}`);
                 });
 
             }
@@ -40,13 +38,14 @@ module.exports = {
                 const $ = cheerio.load(body);
 
                 const imageUrl = []
-                const title = $('.product_title').text();
-                const descriptionHtml = $('#tab-description').html();
-                const price = $('.woocommerce-Price-amount').first().text();
-                $('.woocommerce-product-gallery__image > a').each(function () {
-                    imageUrl.push($(this).attr('href'));
+                const title = $('.productView-title > span').text();
+                const descriptionHtml = $('#tab-description-mobile > div.tab-popup-content').html(); 
+                const price = "30"
+                
+                $('.product-single__media > .media').each(function () {
+                    imageUrl.push(`https:${$(this).attr('href')}`);
                 });
-                allData.push({ title, descriptionHtml, price, imageUrl:imageUrl.join(", ") })
+                allData.push({ title, descriptionHtml, price, imageUrl: imageUrl.join(", ") })
             }
 
         }

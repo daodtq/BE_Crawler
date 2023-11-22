@@ -54,8 +54,15 @@ module.exports.routes = {
   "GET /joyboxfactory": "etsycrawler/joyboxfactory",
   "GET /simplewootovarible": "etsycrawler/simplewootovarible",
   "GET /link": "etsycrawler/crawlerlink",
-
+  "GET /woo": "etsycrawler/crawlerwoo",
+  "GET /shopify": "etsycrawler/crawlershopify",
+  
   //login gooogle
   "POST /logingg": "account/toolaccount",
   "POST /convert": "etsycrawler/convertimg",
+
+  //tool
+  "POST /addvariable": "tool/addvariable",
+  "POST /delvariable": "tool/delvariable",
+  "GET /getvariable": "tool/getvariable",
 };
