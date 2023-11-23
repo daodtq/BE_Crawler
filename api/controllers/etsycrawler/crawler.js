@@ -35,6 +35,7 @@ module.exports = {
         size: { type: "string" },
         email: { type: "string" },
         sizechart: { type: "string" },
+        color: { type: "string" },
     },
     exits: {},
     fn: async function (inputs, exits) {

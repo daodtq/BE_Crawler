@@ -56,7 +56,8 @@ module.exports.routes = {
   "GET /link": "etsycrawler/crawlerlink",
   "GET /woo": "etsycrawler/crawlerwoo",
   "GET /shopify": "etsycrawler/crawlershopify",
-  
+  "GET /listtiktok": "etsycrawler/getlisttiktok",
+
   //login gooogle
   "POST /logingg": "account/toolaccount",
   "POST /convert": "etsycrawler/convertimg",
