@@ -26,12 +26,19 @@ module.exports = {
         urls: { type: "json" },
         category: { type: "string" },
         price: { type: "number" },
+        height: { type: "number" },
+        weight: { type: "number" },
+        width: { type: "number" },
+        length1: { type: "number" },
         time: { type: "number" },
         hash: { type: "string" },
+        size: { type: "string" },
+        email: { type: "string" },
+        sizechart: { type: "string" },
     },
     exits: {},
     fn: async function (inputs, exits) {
-        const { urls, category, price, time, hash } = inputs;
+        const { urls, category, height, sizechart, weight, width, length1, size, color, price, time, hash, email } = inputs;
         const data = [];
         let stt = 0
         let dataError = 0
@@ -130,13 +137,17 @@ module.exports = {
             stt++
             // Sau khi vòng lặp kết thúc và có dữ liệu hợp lệ, bạn có thể sử dụng dữ liệu ở đây
             data.push(["T-shirts (601302)", null, title, description, "0.45", "3", "10", 10, null, "UPC (3)", null, "S", "White", null, 18, "50", `${moment().unix()}${stt}`, image?.[0] || null, image?.[1] || null, image?.[2] || null, image?.[3] || null, image?.[4] || null, image?.[5] || null, image?.[6] || null, image?.[7] || null, image?.[8] || null, "https://crawleretsy.nyc3.digitaloceanspaces.com/fe3fd85de2294c7a873a534f8719601a~tplv-omjb5zjo8w-origin-jpeg.jpeg", null, null, null, null, null, null, null, null, null, null, null, "Active"])
+            const exist = await Tiktok.find({ product_name:title, main_image: image?.[0] })
+            if (exist.length == 0) {
+                await Tiktok.create({ category, product_name:title, product_description:description, parcel_weight: weight, parcel_length: length1, parcel_width: width, parcel_height: height, delivery: "UPC (3)", property_value_1: size, property_value_2: color, price, quantity: "50", main_image: image?.[0] || "", image_2: image?.[1] || "", image_3: image?.[2] || "", image_4: image?.[3] || "", image_5: image?.[4] || "", image_6: image?.[5] || "", image_7: image?.[6] || "", image_8: image?.[7] || "", image_9: image?.[8] || "", size_chart: sizechart, email })
+            }
         }
         const res = await fetchUser()
         if (res != 0) {
             return exits.success({ status: 1 });
         } else {
             await Promise.all(urls.map((url, index) => fetchListingData(url, index)));
-            await ListTiktok.create({ type: category, data, price })
+            // await ListTiktok.create({ type: category, data, price })
             return exits.success({ data, dataError: `${urls.length - dataError}/${urls.length}` });
         }
 
