@@ -60,6 +60,7 @@ module.exports.routes = {
 
   //login gooogle
   "POST /logingg": "account/toolaccount",
+  "POST /edittool": "account/edittoolaccount",
   "POST /convert": "etsycrawler/convertimg",
 
   //tool

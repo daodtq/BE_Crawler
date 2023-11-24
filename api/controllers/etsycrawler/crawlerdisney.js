@@ -19,8 +19,8 @@ module.exports = {
     fn: async function (inputs, exits) {
         const productLinks = [];
         const fetchListingData = async () => {
-            for (let i = 1; i < 100; i++) {
-                const urlmain = `https://www.etsy.com/search/clothing/womens-clothing/tops-and-tees/tshirts?q=disney+shirt&explicit=1&ship_to=US&page=${i}&ref=pagination`
+            for (let i = 1; i <= 35; i++) {
+                const urlmain = `https://www.etsy.com/shop/CuTeesCustomShirts?page=${i}`
                 const response = await fetch(urlmain, {
                     method: 'GET',
                     headers: {
