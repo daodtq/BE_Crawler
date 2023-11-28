@@ -67,4 +67,8 @@ module.exports.routes = {
   "POST /addvariable": "tool/addvariable",
   "POST /delvariable": "tool/delvariable",
   "GET /getvariable": "tool/getvariable",
+
+  //tool
+  "POST /teepublic": "tool/teepublic",
+  "POST /redbubblic": "tool/redbubblic",
 };
