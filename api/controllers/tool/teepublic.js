@@ -4,7 +4,10 @@ const fs = require('fs');
 const moment = require('moment');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const csv = require('fast-csv');
-const stringify = require('csv-stringify');
+const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
+const path = require("path");
+const { fromString } = require("@aws-sdk/util-buffer-from");
+const { Readable } = require("stream");
 const header = [
     "ID", "Type", "SKU", "Name", "Published", "Is featured?", "Visibility in catalog",
     "Short description", "Description", "Date sale price starts", "Date sale price ends",
@@ -30,13 +33,16 @@ module.exports = {
         file: { type: "json" },
         from: { type: "string" },
         end: { type: "string" },
+        checked: { type: "boolean" },
+        cate: { type: "string" },
     },
     exits: {
     },
     fn: async function (inputs, exits) {
-        const { link, type, file, from, end } = inputs;
-        let allData = []
+        const { link, type, file, from, end, checked, cate } = inputs;
+        let allData = [header]
         let productLinks = []
+        let j = 0
         const fetchListingData = async () => {
             if (type == "link") {
                 for (let i = from; i <= end; i++) {
@@ -56,7 +62,7 @@ module.exports = {
             }
         }
 
-        async function fetchData(url) {
+        async function fetchData({ _index, url }) {
             try {
                 const response = await fetch(url, {
                     method: 'GET',
@@ -72,21 +78,24 @@ module.exports = {
                     return $(el).html().includes("TeePublic['ProductOptions']");
                 }).html();
                 const title = $('.m-design__title > h1').text();
-                const descriptionHtml = $('.m-google-faq__container').html().replace(/\n/g, "");
+                const descriptionHtml = $('.m-design__description').text()
                 // Sử dụng các phương thức String để trích xuất giá trị của biến
                 const startIndex = scriptContent.indexOf("TeePublic['ProductOptions'] = {") + "TeePublic['ProductOptions'] = ".length;
-                const endIndex = scriptContent.indexOf(';', startIndex);
-                const productOptionsString = scriptContent.substring(startIndex, endIndex);
-
-
+                const endIndex = scriptContent.indexOf('};', startIndex);
+                const productOptionsString = scriptContent.substring(startIndex, endIndex + 1);
+                // return exits.success(productOptionsString)
                 // Chuyển đổi chuỗi JSON thành đối tượng JavaScript
-                const productOptions = JSON.parse(productOptionsString);
+                let productOptions = JSON.parse(productOptionsString);
+                const scriptContent1 = $('script[type="application/ld+json"]').html();
+                const jsonData = JSON.parse(scriptContent1);
+                const c = jsonData.category
+                const number = c == "T-Shirt" ? 1 : c == "Tank Top" ? 2 : c == "Hoodie" ? 4 : c == "Crewneck Sweatshirt" ? 5 : c == "Long Sleeve T-Shirt" ? 7 : c == "Baseball T-Shirts" ? 8 : c == "Kids T-Shirt" ? 3 : c == "Kids Hoodie" ? 14 : c == "Kids Long Sleeve T-Shirt" ? 15 : c == "Baby Bodysuits" ? 13 : c == "Posters and Art Prints" ? 6 : c == "Pillow" ? 17 : c == "Tote" ? 18 : c == "Mug" ? 12 : c == "Tapestry" ? 19 : c == "Pin" ? 20 : c == "Phone Case" ? 9 : c == "Sticker" ? 16 : c == "Magnet" ? 21 : 0
                 const activeProductId = productOptions.DesignOptions.active_product_ids
                 const product = productOptions.CanvasOptions.products
                 const hierarchy = productOptions.CanvasOptions.hierarchy.map(item => item.slug);
                 const activeProduct = []
                 let variant = {}
-                const responseImage = await fetch(`https://www.teepublic.com/designs/${url.match(/\/(\d+)-/)[1]}/canvas/1/product_images`, {
+                const responseImage = await fetch(`https://www.teepublic.com/designs/${url.match(/\/(\d+)-/)[1]}/canvas/${number}/product_images`, {
                     redirect: 'manual',
                     "headers": {
                         "accept": "*/*",
@@ -105,16 +114,14 @@ module.exports = {
                 })
 
                 const imageJSON = await responseImage.json();
-
                 if (!responseImage.ok) {
                     throw new Error(`Failed to fetch data from ${url}`);
                 }
-
                 for (let _activeProductId of activeProductId) {
+                    if (checked && !cate.slice("|").includes(product[_activeProductId].attributes?.style?.name)) {
+                        continue
+                    }
                     const atribute = []
-                    // if (!variant[product[_activeProductId].attributes]) {
-                    //     variant[product[_activeProductId].attributes] = []
-                    // }
                     for (let _atribute of Object.keys(product[_activeProductId].attributes)) {
                         if (!variant[_atribute]) {
                             variant[_atribute] = []
@@ -126,7 +133,7 @@ module.exports = {
                         let i = 0
                         for (let _product_ids of _img.product_ids) {
                             if (_product_ids == _activeProductId) {
-                                activeProduct.push([title, product[_activeProductId].attributes.style.name, atribute, product[_activeProductId].sale_price, product[_activeProductId].retail_price, _img.images[0].url.replace(/ /g, "%20")])
+                                activeProduct.push([title, product[_activeProductId].attributes?.style?.name ? product[_activeProductId].attributes?.style.name : product[_activeProductId].attributes[hierarchy[0]].name, atribute, product[_activeProductId].sale_price, product[_activeProductId].retail_price, _img.images[0].url.replace(/ /g, "%20").replace(/,/g, "%2C")])
                                 i = 1
                                 break
                             }
@@ -138,13 +145,13 @@ module.exports = {
 
                 for (let [index, row] of activeProduct.entries()) {
                     if (index == 0) {
-                        let aaaa = [skuTime, "variable", skuTime, row[0], "1", "0", "visible", "", descriptionHtml, "", "", "taxable", "", "1", "", "", "0", "0", "", "", "", "", "1", "", "", "", variant.style.join(","), "", "", row[5], "", "", "", "", "", "", "", "", "0"]
+                        let aaaa = [`${skuTime}-${_index}`, "variable", `${skuTime}-${_index}`, row[0], "1", "0", "visible", "", descriptionHtml, "", "", "taxable", "", "1", "", "", "0", "0", "", "", "", "", "1", "", "", "", c, "", "", row[5], "", "", "", "", "", "", "", "", "0"]
                         for (let _variant of Object.keys(variant)) {
                             aaaa.push(_variant.replace(/\b\w/g, match => match.toUpperCase()), variant[_variant].join(","), 1, 1, variant[_variant][0])
                         }
                         allData.push(aaaa)
                     }
-                    let bbbb = [`${skuTime}-${index}`, "variation", `${skuTime}-${index}`, row[0], "1", "0", "visible", "", "", "", "", "taxable", "parent", "1", "", "", "0", "0", "", "", "", "", "1", "", "", row[3], row[1], "", "", row[5], "", "", skuTime, "", "", "", "", "", index]
+                    let bbbb = [`${skuTime}-${_index}-${index}`, "variation", `${skuTime}-${_index}-${index}`, row[0], "1", "0", "visible", "", "", "", "", "taxable", "parent", "1", "", "", "0", "0", "", "", "", "", "1", "", row[3], row[4], c, "", "", row[5], "", "", `${skuTime}-${_index}`, "", "", "", "", "", index + 1]
                     for (let _variant of row[2]) {
                         bbbb.push(_variant[0], _variant[1], "", 1, "")
                     }
@@ -156,48 +163,31 @@ module.exports = {
         }
         async function fetchAllData() {
             try {
-                let _productLinks = [productLinks[0]]
-                const allDataPromises = _productLinks.map(url => fetchData(url));
+                if (type != "link") {
+                    productLinks = file
+                }
+                const allDataPromises = productLinks.map((url, _index) => fetchData({ _index, url }));
                 await Promise.all(allDataPromises);
 
             } catch (error) {
                 console.error(`Error fetching all data: ${error.message}`);
             }
         }
-        function convertToCSV(data) {
-            // Chuyển đổi mảng hai chiều thành chuỗi CSV
-            const csvRows = [];
-            for (const row of data) {
-                const csvRow = row.map(value => `"${value}"`).join(',');
-                csvRows.push(csvRow);
-            }
-            return csvRows.join('\n');
-        }
-        await fetchListingData();
+
+        if (type == "link") { await fetchListingData() }
         await fetchAllData();
+        if (allData.length == 1) {
+            return exits.success({ status: 1, message: "Link cung cấp không phù hợp hoặc sai!" });
+        }
         const stream = fs.createWriteStream('data.csv');
-
-        // Create a CSV stream
         const csvStream = csv.format({ headers: false });
-
-        // Pipe the CSV stream to the writable stream
         csvStream.pipe(stream);
-
-        // Write each row to the CSV stream
         allData.forEach(row => csvStream.write(row));
-
-        // End the CSV stream
         csvStream.end();
-
-        // Wait for the stream to finish writing before sending the response
-        stream.on('finish', () => {
-            // Optionally, you can move the file to a public directory
+        stream.on('finish', async () => {
             const filePath = 'data.csv';
             fs.renameSync('data.csv', filePath);
-
-            // Set response message with download link
-            const downloadLink = `${this.req.protocol}://${this.req.get('host')}/data.csv`;
-            return this.res.ok(`File created successfully. Download link: ${downloadLink}`);
+            return exits.success({ status: 0 });
         });
     }
 }

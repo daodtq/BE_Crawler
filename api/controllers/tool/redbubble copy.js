@@ -1,7 +1,6 @@
 const fetch = require('node-fetch');
 const puppeteer = require('puppeteer');
 const cheerio = require('cheerio');
-const { Cluster } = require('puppeteer-cluster');
 const fs = require('fs');
 const moment = require('moment');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
@@ -83,77 +82,55 @@ module.exports = {
                 const items = JSON.parse(scriptContent).props.pageProps.inventoryCategorySet;
                 const category = items.categoryName;
                 const description = items.defaultItem.productInfo.longDescription.join("\n");
-                const title = await page.$eval('#__next > div > main > div > div > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(1) > div > h1', element => element.textContent);
 
                 let variable = {};
-                items.configurationSet.map(item => {
-                    if (item.name == "configuration") {
-                        return
-                    }
+                const configurationSet = items.configurationSet.map((item, index) => {
                     const attributeName = item.name.replace("body", "").replace(/\b\w/g, match => match.toUpperCase());
-                    if (!variable[attributeName]) {
-                        variable[attributeName] = [];
-                    }
-                    if (!variable[attributeName].includes(item.attributes.find(attribute => attribute.name === "defaultText").value)) {
-                        variable[attributeName].push(item.attributes.find(attribute => attribute.name === "defaultText").value);
+
+                    if (!variable[attributeName]) variable[attributeName] = [];
+
+                    if (!variable[attributeName].includes(item.attributes[0].value)) {
+                        variable[attributeName].push(item.attributes[0].value);
                     }
                 });
 
-
-                const images = items.defaultItem.previewSet.previews.map(item => item.url.replace(/,/g, "%2C"));
+                const images = items.defaultItem.previewSet.previews.map(item => item.url);
                 const idDefault = items.defaultItem.id;
-                const parent = [idDefault, "variable", idDefault, title, "1", "0", "visible", "", description, "", "", "taxable", "", "1", "", "", "0", "0", "", "", "", "", "1", "", "", "", category, "", "", images.join(", "), "", "", "", "", "", "", "", "", "0"]
-                for (let _variant of Object.keys(variable)) {
-                    parent.push(_variant, variable[_variant].join(","), 1, 1, variable[_variant][0])
-                }
-                allData.push(parent)
-                for (let item of items.items) {
-                    const child = [item.id, "variation", item.id, title, "1", "0", "visible", "", "", "", "", "taxable", "parent", "1", "", "", "0", "0", "", "", "", "", "1", "", item.price.amount, item.price.discount.amount, "", "", "", item.previewSet.previews[0].url.replace(/,/g, "%2C"), "", "", idDefault, "", "", "", "", "", "0"]
-                    for (let _variant of item.attributes) {
-                        child.push(_variant.name.replace("body", "").replace(/\b\w/g, match => match.toUpperCase()), _variant.attributes.find(attribute => attribute.name === "defaultText").value, "", 1, "")
-                    }
-                    allData.push(child)
-                }
+                // Rest of your code to extract data using Puppeteer
             } catch (error) {
-                console.error(url, error);
+                console.error(error);
             } finally {
-                // await page.close();
+                await page.close();
             }
 
         }
         async function fetchAllData() {
-            const cluster = await Cluster.launch({
-                concurrency: Cluster.CONCURRENCY_CONTEXT,
-                maxConcurrency: 3, // Số lượng luồng bạn muốn chạy
-                puppeteerOptions: {
-                    headless: false
-                },
-            });
+            const browser = await puppeteer.launch({ headless: false });
             try {
                 if (type != "link") {
-                    productLinks = file;
+                    productLinks = file
                 }
-                await cluster.task(async ({ page, data: { url, index } }) => {
-                    await fetchData({ _index: index, url, browser: null, page });
-                });
+                // console.log(productLinks)
+                // const allDataPromises = productLinks.map(async (url, _index) => {
 
+                //     page.push(await browser.newPage())
+                //     fetchData({ _index, url, browser, page: page[_index] })
+                // }
+                // );
+                // await Promise.all(allDataPromises);
                 for (let i = 0; i < productLinks.length; i++) {
                     const url = productLinks[i];
-                    cluster.queue({ url, index: i });
+                    const page = await browser.newPage();
+                    await fetchData({ _index: i, url, browser, page });
                 }
-                await cluster.idle();
+
             } catch (error) {
                 console.error(`Error fetching all data: ${error.message}`);
-            } finally {
-                await cluster.close();
             }
         }
 
         if (type == "link") { await fetchListingData() }
         await fetchAllData();
-        if (allData.length == 1) {
-            return exits.success({ status: 1 , message: "Link lổi!"});
-        }
         const stream = fs.createWriteStream('data.csv');
         const csvStream = csv.format({ headers: false });
         csvStream.pipe(stream);
