@@ -52,7 +52,7 @@ module.exports = {
         let j = 0
         const fetchListingData = async () => {
             if (type == "link") {
-                const browser = await puppeteer.launch({ headless: false });
+                const browser = await puppeteer.launch({ headless: true, args: ['-no-sandbox'] });
                 const page = await browser.newPage();
 
                 try {
@@ -129,7 +129,8 @@ module.exports = {
                 concurrency: Cluster.CONCURRENCY_CONTEXT,
                 maxConcurrency: 3, // Số lượng luồng bạn muốn chạy
                 puppeteerOptions: {
-                    headless: false
+                    headless: true,
+                    args: ['-no-sandbox']
                 },
             });
             try {
@@ -155,7 +156,7 @@ module.exports = {
         if (type == "link") { await fetchListingData() }
         await fetchAllData();
         if (allData.length == 1) {
-            return exits.success({ status: 1 , message: "Link cung cấp không phù hợp hoặc sai!"});
+            return exits.success({ status: 1, message: "Link cung cấp không phù hợp hoặc sai!" });
         }
         const stream = fs.createWriteStream('data.csv');
         const csvStream = csv.format({ headers: false });
