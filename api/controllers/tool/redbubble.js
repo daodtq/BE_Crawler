@@ -202,7 +202,7 @@ module.exports = {
         if (type == "link") { await fetchListingData() }
         await fetchAllData();
         if (allData.length == 1) {
-            return exits.success({ status: 1, message: "Link cung cấp không phù hợp hoặc sai!" });
+            return exits.success({ status: 1, message: "Hiện tại đang bảo trì!" });
         }
         const stream = fs.createWriteStream('data.csv');
         const csvStream = csv.format({ headers: false });

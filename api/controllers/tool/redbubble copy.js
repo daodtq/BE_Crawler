@@ -1,3 +1,6 @@
+
+'use strict';
+
 const fetch = require('node-fetch');
 const puppeteer = require('puppeteer');
 const cheerio = require('cheerio');
@@ -5,8 +8,7 @@ const fs = require('fs');
 const moment = require('moment');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const csv = require('fast-csv');
-const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
-const path = require("path");
+
 const { fromString } = require("@aws-sdk/util-buffer-from");
 const { Readable } = require("stream");
 const header = [
@@ -25,6 +27,40 @@ const header = [
     "Attribute 4 default", "Attribute 5 name", "Attribute 5 value(s)", "Attribute 5 visible", "Attribute 5 global",
     "Attribute 5 default", "Meta: hwp_product_gtin"
 ]
+const proxies = [
+    "http://204.9.59.5:41468:zBXgFYrJqcblaZ5:1Yc7K0Pl8nd0vIT",
+    "http://204.9.59.86:43542:p7BQXRoR39VFYqT:1GEmdtdy12QXNFw",
+    "http://45.199.149.229:42346:YrOJXDuMiv8UZoG:80Xk675JBNccYBq",
+    "http://139.171.88.16:48883:ur4ErsJKzsWBZsE:FwlVq4NGsNZdM7A",
+    "http://139.171.88.57:46581:oK0LHqXeLBWz43j:qCOm9YfDCPYt4jE",
+    "http://139.171.90.146:45984:S02mTUTIO3JTnAh:Pv2UmlcAuOm8GSz",
+    "http://139.171.90.208:43063:ygERNBZwyR1XIy2:cyNLgxCGB4czd2G",
+    "http://139.171.90.243:46947:AzWjkQ89FFSmapM:Sv3SgI7PI2H0Ldw",
+    "http://139.171.90.55:41703:g3ynanI5gNEr8ET:FFk6ICKVbKCiyCT",
+    "http://139.171.90.70:49287:XsPPR8LYgcnpzrn:Gw7rmQUxVHDaGtT",
+    "http://139.171.91.77:41169:mXtRrsFp6wB42zE:SwbwIIRrfrxVZjo",
+    "http://204.9.59.140:45966:zLD1BvPp4Hnv224:5cDY4AEM5wwR4MM",
+    "http://204.9.59.241:44223:wVQKSja1wmSEiMB:Qg2o60DU9GEH2B4",
+    "http://207.228.10.73:48205:kpXhN55ja0V4ece:LY2ALwCKdGYZk7S",
+    "http://207.228.27.140:48694:FCyKmAlRszHNoQ1:BqQ2DMt5pRj4q6C",
+    "http://207.228.43.132:41869:uHzRaBX0r2UTglu:jHZeUH5S3RyvcEn",
+    "http://207.228.47.141:49121:TigpqQt47Qzs5IC:GtrCdCf779CBROF",
+    "http://207.228.47.185:49135:k6p4wtFIGhnhm43:w7LiRbRtNp1fP4Z",
+    "http://207.228.51.101:48553:nS3Re6nmy3Ze0pH:K4lEcclP3X0GDzO",
+    "http://207.228.52.83:47570:TC6aSopoBXBZYk9:k9HgvhtTJaKAooC",
+    "http://207.228.54.190:45062:MsXxtFpkCFAl9n6:5hapTrCvTJcfrJd",
+    "http://207.228.60.145:44856:L0ouou6Fji5keWg:UOLrdBzPWjmYfws",
+    "http://207.228.63.23:44241:mYpLu7nOkfvALP5:0EHUGbdBzUzVaZT",
+    "http://107.180.132.21:44575:uw1MFER5nZVNZNL:p5KeD6L8vHzD7dJ",
+    "http://107.180.161.171:47741:A0cnDvhnrLbmvIr:SNXj3MZ6T960ln4",
+    "http://107.180.162.27:45351:HCcf42l5n7oCaw3:oGVCrALQN8MHIsB",
+    "http://107.180.164.251:43372:YcJ72g2t0nS71EI:2CKrJJTYIwxAvjM",
+    "http://107.180.166.122:46811:WroURko2XYIr5O4:uCmOMcvaw0Bntia"
+]
+function getRandomProxy() {
+    const randomIndex = Math.floor(Math.random() * proxies.length);
+    return proxies[randomIndex];
+}
 module.exports = {
     friendlyName: "Index",
     description: "Index home",
@@ -48,7 +84,7 @@ module.exports = {
         let j = 0
         const fetchListingData = async () => {
             if (type == "link") {
-                const browser = await puppeteer.launch({ headless: false });
+                const browser = await puppeteer.launch({ headless: true , args: ['-no-sandbox'] });
                 const page = await browser.newPage();
 
                 try {
@@ -82,55 +118,92 @@ module.exports = {
                 const items = JSON.parse(scriptContent).props.pageProps.inventoryCategorySet;
                 const category = items.categoryName;
                 const description = items.defaultItem.productInfo.longDescription.join("\n");
+                const title = await page.$eval('#__next > div > main > div > div > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(1) > div > h1', element => element.textContent);
 
                 let variable = {};
-                const configurationSet = items.configurationSet.map((item, index) => {
+                items.configurationSet.map(item => {
+                    if (item.name == "configuration") {
+                        return
+                    }
                     const attributeName = item.name.replace("body", "").replace(/\b\w/g, match => match.toUpperCase());
-
-                    if (!variable[attributeName]) variable[attributeName] = [];
-
-                    if (!variable[attributeName].includes(item.attributes[0].value)) {
-                        variable[attributeName].push(item.attributes[0].value);
+                    if (!variable[attributeName]) {
+                        variable[attributeName] = [];
+                    }
+                    if (!variable[attributeName].includes(item.attributes.find(attribute => attribute.name === "defaultText").value)) {
+                        variable[attributeName].push(item.attributes.find(attribute => attribute.name === "defaultText").value);
                     }
                 });
 
-                const images = items.defaultItem.previewSet.previews.map(item => item.url);
+
+                const images = items.defaultItem.previewSet.previews.map(item => item.url.replace(/,/g, "%2C"));
                 const idDefault = items.defaultItem.id;
-                // Rest of your code to extract data using Puppeteer
+                const parent = [idDefault, "variable", idDefault, title, "1", "0", "visible", "", description, "", "", "taxable", "", "1", "", "", "0", "0", "", "", "", "", "1", "", "", "", category, "", "", images.join(", "), "", "", "", "", "", "", "", "", "0"]
+                for (let _variant of Object.keys(variable)) {
+                    parent.push(_variant, variable[_variant].join(","), 1, 1, variable[_variant][0])
+                }
+                allData.push(parent)
+                for (let item of items.items) {
+                    const child = [item.id, "variation", item.id, title, "1", "0", "visible", "", "", "", "", "taxable", "parent", "1", "", "", "0", "0", "", "", "", "", "1", "", item.price.amount, item.price.discount.amount, "", "", "", item.previewSet.previews[0].url.replace(/,/g, "%2C"), "", "", idDefault, "", "", "", "", "", "0"]
+                    for (let _variant of item.attributes) {
+                        child.push(_variant.name.replace("body", "").replace(/\b\w/g, match => match.toUpperCase()), _variant.attributes.find(attribute => attribute.name === "defaultText").value, "", 1, "")
+                    }
+                    allData.push(child)
+                }
             } catch (error) {
-                console.error(error);
+                console.error(url, error);
             } finally {
                 await page.close();
             }
 
         }
+
         async function fetchAllData() {
-            const browser = await puppeteer.launch({ headless: false });
+            const maxConcurrency = 5;
+            if (type != "link") {
+                productLinks = file;
+            }
+
+            const browser = await puppeteer.launch({
+                headless: true ,
+                args: ['-no-sandbox']
+            });
+
             try {
-                if (type != "link") {
-                    productLinks = file
-                }
-                // console.log(productLinks)
-                // const allDataPromises = productLinks.map(async (url, _index) => {
+                for (let i = 0; i < productLinks.length; i += maxConcurrency) {
+                    const chunk = productLinks.slice(i, i + maxConcurrency);
+                    const pagePromises = [];
+                    for (let j = 0; j < chunk.length; j++) {
+                        const url = chunk[j];
+                        const page = await browser.newPage();
+                        await page.setRequestInterception(true);
+                        page.on('request', (request) => {
+                            const resourceType = request.resourceType();
+                            if (resourceType === 'image') {
+                                request.abort();
+                            } else {
+                                const proxy = getRandomProxy()
+                                request.continue({ proxy });
+                            }
+                        });
+                        const fetchDataPromise = fetchData({ _index: i + j, url, browser, page });
 
-                //     page.push(await browser.newPage())
-                //     fetchData({ _index, url, browser, page: page[_index] })
-                // }
-                // );
-                // await Promise.all(allDataPromises);
-                for (let i = 0; i < productLinks.length; i++) {
-                    const url = productLinks[i];
-                    const page = await browser.newPage();
-                    await fetchData({ _index: i, url, browser, page });
+                        pagePromises.push(fetchDataPromise);
+                    }
+                    await Promise.all(pagePromises);
                 }
-
             } catch (error) {
-                console.error(`Error fetching all data: ${error.message}`);
+                console.error(`Error fetching data: ${error.message}`);
+            } finally {
+                await browser.close();
             }
         }
 
+
         if (type == "link") { await fetchListingData() }
         await fetchAllData();
+        if (allData.length == 1) {
+            return exits.success({ status: 1, message: "Link cung cấp không phù hợp hoặc sai!" });
+        }
         const stream = fs.createWriteStream('data.csv');
         const csvStream = csv.format({ headers: false });
         csvStream.pipe(stream);
