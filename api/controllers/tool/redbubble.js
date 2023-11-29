@@ -1,3 +1,6 @@
+
+'use strict';
+
 const fetch = require('node-fetch');
 const puppeteer = require('puppeteer');
 const cheerio = require('cheerio');
@@ -152,7 +155,7 @@ module.exports = {
         if (type == "link") { await fetchListingData() }
         await fetchAllData();
         if (allData.length == 1) {
-            return exits.success({ status: 1 , message: "Link lổi!"});
+            return exits.success({ status: 1 , message: "Link cung cấp không phù hợp hoặc sai!"});
         }
         const stream = fs.createWriteStream('data.csv');
         const csvStream = csv.format({ headers: false });
