@@ -3,6 +3,7 @@ const fetch = require('node-fetch');
 const cheerio = require('cheerio');
 const fs = require('fs');
 const moment = require('moment');
+const bcrypt = require("bcryptjs")
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const csv = require('fast-csv');
 const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
@@ -36,14 +37,41 @@ module.exports = {
         end: { type: "string" },
         checked: { type: "boolean" },
         cate: { type: "string" },
+        hash: { type: "string" }, time: { type: "number" },
     },
     exits: {
     },
     fn: async function (inputs, exits) {
-        const { link, type, file, from, end, checked, cate } = inputs;
+        const { link, type, file, from, end, checked, cate, hash,time } = inputs;
         let allData = [header]
         let productLinks = []
         let j = 0
+
+        const fetchUser = async () => {
+            let existAccount = await Google.find();
+            for (const _existAccount of existAccount) {
+                const result = await new Promise((resolve, reject) => {
+                    bcrypt.compare(_existAccount.mail, hash, (err, result) => {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(result);
+                        }
+                    });
+                });
+
+                if (result) {
+                    let _time = await Google.findOne({ mail: _existAccount.mail })
+                    _time = _time?.time
+                    if (time == _time) {
+                        return 0; // Thực hiện các hành động sau khi xác thực thành công
+                    } else {
+                        return 1
+                    }
+                }
+            }
+        }
+
         const fetchListingData = async () => {
             if (type == "link") {
                 for (let i = from; i <= end; i++) {
@@ -174,21 +202,25 @@ module.exports = {
                 console.error(`Error fetching all data: ${error.message}`);
             }
         }
-
-        if (type == "link") { await fetchListingData() }
-        await fetchAllData();
-        if (allData.length == 1) {
-            return exits.success({ status: 1, message: "Link cung cấp không phù hợp hoặc sai!" });
+        const res = await fetchUser()
+        if (res != 0) {
+            return exits.success({ status: 1, message: "Tài khoản đang đăng nhập nơi khác, đăng nhập lại" });
+        } else {
+            if (type == "link") { await fetchListingData() }
+            await fetchAllData();
+            if (allData.length == 1) {
+                return exits.success({ status: 1, message: "Link cung cấp không phù hợp hoặc sai!" });
+            }
+            const stream = fs.createWriteStream('data.csv');
+            const csvStream = csv.format({ headers: false });
+            csvStream.pipe(stream);
+            allData.forEach(row => csvStream.write(row));
+            csvStream.end();
+            stream.on('finish', async () => {
+                const filePath = 'data.csv';
+                fs.renameSync('data.csv', filePath);
+                return exits.success({ status: 0 });
+            });
         }
-        const stream = fs.createWriteStream('data.csv');
-        const csvStream = csv.format({ headers: false });
-        csvStream.pipe(stream);
-        allData.forEach(row => csvStream.write(row));
-        csvStream.end();
-        stream.on('finish', async () => {
-            const filePath = 'data.csv';
-            fs.renameSync('data.csv', filePath);
-            return exits.success({ status: 0 });
-        });
     }
 }
