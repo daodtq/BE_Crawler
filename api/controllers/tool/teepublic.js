@@ -42,7 +42,7 @@ module.exports = {
     exits: {
     },
     fn: async function (inputs, exits) {
-        const { link, type, file, from, end, checked, cate, hash,time } = inputs;
+        const { link, type, file, from, end, checked, cate, hash, time } = inputs;
         let allData = [header]
         let productLinks = []
         let j = 0
@@ -82,6 +82,7 @@ module.exports = {
                     const body = await response.text();
                     const $ = cheerio.load(body);
                     const _resP = $('.m-tiles__preview');
+                    console.log(response)
 
                     _resP.each((index, element) => {
                         const product_link = $(element).attr('href');
@@ -191,15 +192,28 @@ module.exports = {
             }
         }
         async function fetchAllData() {
-            try {
+            // try {
                 if (type != "link") {
                     productLinks = file
                 }
-                const allDataPromises = productLinks.map((url, _index) => fetchData({ _index, url }));
-                await Promise.all(allDataPromises);
+            //     const allDataPromises = productLinks.map((url, _index) => fetchData({ _index, url }));
+            //     await Promise.all(allDataPromises);
 
-            } catch (error) {
-                console.error(`Error fetching all data: ${error.message}`);
+            // } catch (error) {
+            //     console.error(`Error fetching all data: ${error.message}`);
+            // }
+            const concurrency = 10; // Số lượng đồng thời
+            const results = [];
+
+            async function runBatch(batchUrls) {
+                const batchPromises = batchUrls.map((url, index) => fetchData({ _index: index, url }));
+                const batchResults = await Promise.all(batchPromises);
+                results.push(...batchResults);
+            }
+
+            for (let i = 0; i < productLinks.length; i += concurrency) {
+                const batchUrls = productLinks.slice(i, i + concurrency);
+                await runBatch(batchUrls);
             }
         }
         const res = await fetchUser()
