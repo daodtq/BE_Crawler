@@ -9,7 +9,7 @@ const fs = require('fs');
 const moment = require('moment');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const csv = require('fast-csv');
-
+const xvfb = require('xvfb');
 const { fromString } = require("@aws-sdk/util-buffer-from");
 const { Readable } = require("stream");
 const header = [
@@ -85,6 +85,8 @@ module.exports = {
         let j = 0
         const fetchListingData = async () => {
             if (type == "link") {
+                const xvfbInstance = new xvfb();
+                xvfbInstance.startSync();
                 const browser = await puppeteer.launch({
                     headless: true, devtools: false,
                     ignoreHTTPSErrors: true,
@@ -117,6 +119,7 @@ module.exports = {
                     console.error(error);
                 } finally {
                     await browser.close();
+                    xvfbInstance.stopSync();
                 }
             }
         }
@@ -173,11 +176,14 @@ module.exports = {
             if (type != "link") {
                 productLinks = file;
             }
-
-            const browser = await puppeteer.launch({ headless: true, devtools: false,
+            const xvfbInstance = new xvfb();
+            xvfbInstance.startSync();
+            const browser = await puppeteer.launch({
+                headless: true, devtools: false,
                 ignoreHTTPSErrors: true,
                 slowMo: 0,
-                args: ['--disable-gpu','--no-sandbox','--no-zygote','--disable-setuid-sandbox','--disable-accelerated-2d-canvas','--disable-dev-shm-usage', "--proxy-server='direct://'", "--proxy-bypass-list=*"]});
+                args: ['--disable-gpu', '--no-sandbox', '--no-zygote', '--disable-setuid-sandbox', '--disable-accelerated-2d-canvas', '--disable-dev-shm-usage', "--proxy-server='direct://'", "--proxy-bypass-list=*"]
+            });
 
             try {
                 for (let i = 0; i < productLinks.length; i += maxConcurrency) {
@@ -207,6 +213,7 @@ module.exports = {
                 console.error(`Error fetching data: ${error.message}`);
             } finally {
                 await browser.close();
+                xvfbInstance.stopSync();
             }
         }
 
