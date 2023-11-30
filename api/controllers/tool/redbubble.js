@@ -91,12 +91,10 @@ module.exports = {
                     for (let i = from; i <= end; i++) {
                         const urlmain = `${link}?page=${i}/`;
                         await page.goto(urlmain, { waitUntil: 'domcontentloaded' });
+                        console.log(1)
                         page.on('response', async (response) => {
-                            const url = response.url();
-                            if (url.includes('example.com')) {
-                                const body = await response.text();
-                                console.log(`Body of ${url}:`, body);
-                            }
+                            const body = await response.text();
+                            console.log(`Body of ${url}:`, body);
                         });
                         const productLinksOnPage = await page.evaluate(() => {
                             const links = [];
