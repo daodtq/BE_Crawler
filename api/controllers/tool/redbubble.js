@@ -92,11 +92,7 @@ module.exports = {
                         try {
                             const urlmain = `${link}?page=${i}/`;
                             await page.goto(urlmain, { waitUntil: 'domcontentloaded' });
-                            console.log(1)
-                            page.on('response', async (response) => {
-                                const body = await response.text();
-                                console.log(`Body of ${url}:`, body);
-                            });
+                            console.log(await page.content())
                             const productLinksOnPage = await page.evaluate(() => {
                                 const links = [];
                                 document.querySelectorAll('#SearchResultsGrid > a').forEach(element => {
