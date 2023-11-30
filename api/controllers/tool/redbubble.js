@@ -9,7 +9,7 @@ const fs = require('fs');
 const moment = require('moment');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const csv = require('fast-csv');
-const xvfb = require('xvfb');
+
 const { fromString } = require("@aws-sdk/util-buffer-from");
 const { Readable } = require("stream");
 const header = [
@@ -85,8 +85,7 @@ module.exports = {
         let j = 0
         const fetchListingData = async () => {
             if (type == "link") {
-                const xvfbInstance = new xvfb();
-                xvfbInstance.startSync();
+               
                 const browser = await puppeteer.launch({
                     headless: false, devtools: false,
                     ignoreHTTPSErrors: true,
@@ -119,7 +118,7 @@ module.exports = {
                     console.error(error);
                 } finally {
                     await browser.close();
-                    xvfbInstance.stopSync();
+                 
                 }
             }
         }
@@ -176,8 +175,7 @@ module.exports = {
             if (type != "link") {
                 productLinks = file;
             }
-            const xvfbInstance = new xvfb();
-            xvfbInstance.startSync();
+           
             const browser = await puppeteer.launch({
                 headless: false, devtools: false,
                 ignoreHTTPSErrors: true,
@@ -213,7 +211,7 @@ module.exports = {
                 console.error(`Error fetching data: ${error.message}`);
             } finally {
                 await browser.close();
-                xvfbInstance.stopSync();
+              
             }
         }
 
