@@ -86,7 +86,7 @@ module.exports = {
         const fetchListingData = async () => {
             if (type == "link") {
                 const browser = await puppeteer.launch({
-                    headless: false, devtools: false,
+                    headless: true, devtools: false,
                     ignoreHTTPSErrors: true,
                     slowMo: 0,
                     args: ['--disable-gpu', '--no-sandbox', '--no-zygote', '--disable-setuid-sandbox', '--disable-accelerated-2d-canvas', '--disable-dev-shm-usage', "--proxy-server='direct://'", "--proxy-bypass-list=*"]
@@ -174,12 +174,10 @@ module.exports = {
                 productLinks = file;
             }
 
-            const browser = await puppeteer.launch({
-                headless: false, devtools: false,
+            const browser = await puppeteer.launch({ headless: true, devtools: false,
                 ignoreHTTPSErrors: true,
                 slowMo: 0,
-                args: ['--disable-gpu', '--no-sandbox', '--no-zygote', '--disable-setuid-sandbox', '--disable-accelerated-2d-canvas', '--disable-dev-shm-usage', "--proxy-server='direct://'", "--proxy-bypass-list=*"]
-            });
+                args: ['--disable-gpu','--no-sandbox','--no-zygote','--disable-setuid-sandbox','--disable-accelerated-2d-canvas','--disable-dev-shm-usage', "--proxy-server='direct://'", "--proxy-bypass-list=*"]});
 
             try {
                 for (let i = 0; i < productLinks.length; i += maxConcurrency) {
