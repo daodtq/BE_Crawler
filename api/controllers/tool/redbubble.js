@@ -88,7 +88,7 @@ module.exports = {
                 const xvfbInstance = new xvfb();
                 xvfbInstance.startSync();
                 const browser = await puppeteer.launch({
-                    headless: true, devtools: false,
+                    headless: false, devtools: false,
                     ignoreHTTPSErrors: true,
                     slowMo: 0,
                     args: ['--disable-gpu', '--no-sandbox', '--no-zygote', '--disable-setuid-sandbox', '--disable-accelerated-2d-canvas', '--disable-dev-shm-usage', "--proxy-server='direct://'", "--proxy-bypass-list=*"]
@@ -179,7 +179,7 @@ module.exports = {
             const xvfbInstance = new xvfb();
             xvfbInstance.startSync();
             const browser = await puppeteer.launch({
-                headless: true, devtools: false,
+                headless: false, devtools: false,
                 ignoreHTTPSErrors: true,
                 slowMo: 0,
                 args: ['--disable-gpu', '--no-sandbox', '--no-zygote', '--disable-setuid-sandbox', '--disable-accelerated-2d-canvas', '--disable-dev-shm-usage', "--proxy-server='direct://'", "--proxy-bypass-list=*"]
