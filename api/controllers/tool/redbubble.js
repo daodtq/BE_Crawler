@@ -85,12 +85,17 @@ module.exports = {
         let j = 0
         const fetchListingData = async () => {
             if (type == "link") {
-               
+
                 const browser = await puppeteer.launch({
-                    headless: false, devtools: false,
-                    ignoreHTTPSErrors: true,
-                    slowMo: 0,
-                    args: ['--disable-gpu', '--no-sandbox', '--no-zygote', '--disable-setuid-sandbox', '--disable-accelerated-2d-canvas', '--disable-dev-shm-usage', "--proxy-server='direct://'", "--proxy-bypass-list=*"]
+                    headless: false,
+                    args: [
+                        '--no-sandbox',
+                        '--disable-setuid-sandbox',
+                        '--disable-gpu',
+                        '--disable-dev-shm-usage',
+                        '--remote-debugging-port=9222',
+                    ],
+                    executablePath: '/usr/bin/google-chrome',
                 });
                 const page = await browser.newPage();
                 await page.setUserAgent(userAgent.random().toString())
@@ -118,7 +123,7 @@ module.exports = {
                     console.error(error);
                 } finally {
                     await browser.close();
-                 
+
                 }
             }
         }
@@ -175,12 +180,17 @@ module.exports = {
             if (type != "link") {
                 productLinks = file;
             }
-           
+
             const browser = await puppeteer.launch({
-                headless: false, devtools: false,
-                ignoreHTTPSErrors: true,
-                slowMo: 0,
-                args: ['--disable-gpu', '--no-sandbox', '--no-zygote', '--disable-setuid-sandbox', '--disable-accelerated-2d-canvas', '--disable-dev-shm-usage', "--proxy-server='direct://'", "--proxy-bypass-list=*"]
+                headless: false,
+                args: [
+                    '--no-sandbox',
+                    '--disable-setuid-sandbox',
+                    '--disable-gpu',
+                    '--disable-dev-shm-usage',
+                    '--remote-debugging-port=9222',
+                ],
+                executablePath: '/usr/bin/google-chrome',
             });
 
             try {
@@ -211,7 +221,7 @@ module.exports = {
                 console.error(`Error fetching data: ${error.message}`);
             } finally {
                 await browser.close();
-              
+
             }
         }
 
