@@ -4,6 +4,7 @@
 const fetch = require('node-fetch');
 const puppeteer = require('puppeteer');
 const cheerio = require('cheerio');
+var userAgent = require('user-agents');
 const fs = require('fs');
 const moment = require('moment');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
@@ -84,23 +85,28 @@ module.exports = {
         let j = 0
         const fetchListingData = async () => {
             if (type == "link") {
-                const browser = await puppeteer.launch({ headless: true , args: ['-no-sandbox'] });
+                const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'], waitUntil: 'networkidle2', timeout: 60000 });
                 const page = await browser.newPage();
+                await page.setUserAgent(userAgent.random().toString())
 
                 try {
                     for (let i = from; i <= end; i++) {
-                        const urlmain = `${link}?page=${i}/`;
-                        await page.goto(urlmain, { waitUntil: 'domcontentloaded' });
-
-                        const productLinksOnPage = await page.evaluate(() => {
-                            const links = [];
-                            document.querySelectorAll('#SearchResultsGrid > a').forEach(element => {
-                                links.push(element.getAttribute('href'));
+                        try {
+                            const urlmain = `${link}?page=${i}/`;
+                            await page.goto(urlmain, { waitUntil: 'domcontentloaded' });
+                            console.log(await page.content())
+                            const productLinksOnPage = await page.evaluate(() => {
+                                const links = [];
+                                document.querySelectorAll('#SearchResultsGrid > a').forEach(element => {
+                                    links.push(element.getAttribute('href'));
+                                });
+                                return links;
                             });
-                            return links;
-                        });
 
-                        productLinks.push(...productLinksOnPage);
+                            productLinks.push(...productLinksOnPage);
+                        } catch (error) {
+                            console.log(error)
+                        }
                     }
                 } catch (error) {
                     console.error(error);
@@ -163,10 +169,7 @@ module.exports = {
                 productLinks = file;
             }
 
-            const browser = await puppeteer.launch({
-                headless: true ,
-                args: ['-no-sandbox']
-            });
+            const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'], waitUntil: 'networkidle2', timeout: 60000 });
 
             try {
                 for (let i = 0; i < productLinks.length; i += maxConcurrency) {
@@ -175,6 +178,7 @@ module.exports = {
                     for (let j = 0; j < chunk.length; j++) {
                         const url = chunk[j];
                         const page = await browser.newPage();
+                        await page.setUserAgent(userAgent.random().toString())
                         await page.setRequestInterception(true);
                         page.on('request', (request) => {
                             const resourceType = request.resourceType();
@@ -202,7 +206,7 @@ module.exports = {
         if (type == "link") { await fetchListingData() }
         await fetchAllData();
         if (allData.length == 1) {
-            return exits.success({ status: 1, message: "Link cung cấp không phù hợp hoặc sai!" });
+            return exits.success({ status: 1, message: "Hiện tại đang bảo trì!" });
         }
         const stream = fs.createWriteStream('data.csv');
         const csvStream = csv.format({ headers: false });
