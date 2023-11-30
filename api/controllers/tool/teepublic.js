@@ -202,7 +202,7 @@ module.exports = {
             // } catch (error) {
             //     console.error(`Error fetching all data: ${error.message}`);
             // }
-            const concurrency = 10; // Số lượng đồng thời
+            const concurrency = 30; // Số lượng đồng thời
             const results = [];
 
             async function runBatch(batchUrls) {
