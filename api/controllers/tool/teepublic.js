@@ -61,6 +61,15 @@ module.exports = {
                 });
 
                 if (result) {
+                    const test = _existAccount?.test || false
+                    if (test == true) {
+                        const number = _existAccount?.testnumber
+                        if (number >= 1) {
+                            await Google.updateOne({ mail: _existAccount.mail }).set({ testnumber: number - 1 })
+                        } else {
+                            return 3
+                        }
+                    }
                     let _time = await Google.findOne({ mail: _existAccount.mail })
                     _time = _time?.time
                     if (time == _time) {
@@ -193,9 +202,9 @@ module.exports = {
         }
         async function fetchAllData() {
             // try {
-                if (type != "link") {
-                    productLinks = file
-                }
+            if (type != "link") {
+                productLinks = file
+            }
             //     const allDataPromises = productLinks.map((url, _index) => fetchData({ _index, url }));
             //     await Promise.all(allDataPromises);
 
@@ -217,8 +226,10 @@ module.exports = {
             }
         }
         const res = await fetchUser()
-        if (res != 0) {
+        if (res == 1) {
             return exits.success({ status: 1, message: "Tài khoản đang đăng nhập nơi khác, đăng nhập lại" });
+        } else if (res == 3) {
+            return exits.success({ status: 1, message: "Tài khoản đã hết lượt dùng thử!" });
         } else {
             if (type == "link") { await fetchListingData() }
             await fetchAllData();

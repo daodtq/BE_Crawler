@@ -13,5 +13,7 @@ module.exports = {
     color: { type: "string", defaultsTo: 'Black|White|Light Pink|Light Blue|Ash|Red' },
     size: { type: "string", defaultsTo: 'S|M|L|XL|2XL|3XL|4XL|5XL'},
     description: { type: "json"},
+    test: { type: "boolean"},
+    testnumber: { type: "number"},
   },
 };

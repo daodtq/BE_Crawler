@@ -37,7 +37,7 @@ module.exports = {
         }
         const res = await fetchListingData()
         if (res == 0) {
-            return exits.success({ status: 0, size: info?.size, color: info?.color, description: info?.description });
+            return exits.success({ status: 0, size: info?.size, color: info?.color, description: info?.description, test: info?.test });
         } else {
             return exits.success({ status: 1 });
         }
