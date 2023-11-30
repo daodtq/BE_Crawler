@@ -89,22 +89,26 @@ module.exports = {
 
                 try {
                     for (let i = from; i <= end; i++) {
-                        const urlmain = `${link}?page=${i}/`;
-                        await page.goto(urlmain, { waitUntil: 'domcontentloaded' });
-                        console.log(1)
-                        page.on('response', async (response) => {
-                            const body = await response.text();
-                            console.log(`Body of ${url}:`, body);
-                        });
-                        const productLinksOnPage = await page.evaluate(() => {
-                            const links = [];
-                            document.querySelectorAll('#SearchResultsGrid > a').forEach(element => {
-                                links.push(element.getAttribute('href'));
+                        try {
+                            const urlmain = `${link}?page=${i}/`;
+                            await page.goto(urlmain, { waitUntil: 'domcontentloaded' });
+                            console.log(1)
+                            page.on('response', async (response) => {
+                                const body = await response.text();
+                                console.log(`Body of ${url}:`, body);
                             });
-                            return links;
-                        });
+                            const productLinksOnPage = await page.evaluate(() => {
+                                const links = [];
+                                document.querySelectorAll('#SearchResultsGrid > a').forEach(element => {
+                                    links.push(element.getAttribute('href'));
+                                });
+                                return links;
+                            });
 
-                        productLinks.push(...productLinksOnPage);
+                            productLinks.push(...productLinksOnPage);
+                        } catch (error) {
+                            console.log(error)
+                        }
                     }
                 } catch (error) {
                     console.error(error);
