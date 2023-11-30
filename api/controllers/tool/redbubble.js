@@ -84,14 +84,20 @@ module.exports = {
         let j = 0
         const fetchListingData = async () => {
             if (type == "link") {
-                const browser = await puppeteer.launch({ headless: false , args: ['-no-sandbox'] });
+                const browser = await puppeteer.launch({ headless: false });
                 const page = await browser.newPage();
 
                 try {
                     for (let i = from; i <= end; i++) {
                         const urlmain = `${link}?page=${i}/`;
                         await page.goto(urlmain, { waitUntil: 'domcontentloaded' });
-
+                        page.on('response', async (response) => {
+                            const url = response.url();
+                            if (url.includes('example.com')) {
+                                const body = await response.text();
+                                console.log(`Body of ${url}:`, body);
+                            }
+                        });
                         const productLinksOnPage = await page.evaluate(() => {
                             const links = [];
                             document.querySelectorAll('#SearchResultsGrid > a').forEach(element => {
@@ -164,8 +170,7 @@ module.exports = {
             }
 
             const browser = await puppeteer.launch({
-                headless: false ,
-                args: ['-no-sandbox']
+                headless: false
             });
 
             try {
