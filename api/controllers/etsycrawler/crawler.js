@@ -46,7 +46,7 @@ module.exports = {
         let i = 2
         const existsTitle = []
         const fetchUser = async () => {
-            existAccount = await Google.find();
+            let existAccount = await Google.find();
             for (const _existAccount of existAccount) {
                 const result = await new Promise((resolve, reject) => {
                     bcrypt.compare(_existAccount.mail, hash, (err, result) => {
