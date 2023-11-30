@@ -181,7 +181,7 @@ module.exports = {
                         }
                         allData.push(aaaa)
                     }
-                    let bbbb = [`${skuTime}-${_index}-${index}`, "variation", `${skuTime}-${_index}-${index}`, row[0], "1", "0", "visible", "", "", "", "", "taxable", "parent", "1", "", "", "0", "0", "", "", "", "", "1", "", row[3], row[4], c, "", "", row[5], "", "", `${skuTime}-${_index}`, "", "", "", "", "", index + 1]
+                    let bbbb = [`${skuTime}-${_index}-${index}`, "variation", `${skuTime}-${_index}-${index}`, row[0], "1", "0", "visible", "", "", "", "", "taxable", "parent", "1", "", "", "0", "0", "", "", "", "", "1", "", row[3], row[4], "", "", "", row[5], "", "", `${skuTime}-${_index}`, "", "", "", "", "", index + 1]
                     for (let _variant of row[2]) {
                         bbbb.push(_variant[0], _variant[1], "", 1, "")
                     }
