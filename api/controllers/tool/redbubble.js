@@ -84,7 +84,7 @@ module.exports = {
         let j = 0
         const fetchListingData = async () => {
             if (type == "link") {
-                const browser = await puppeteer.launch({ headless: false });
+                const browser = await puppeteer.launch({ headless: false, args: ['--no-sandbox'] });
                 const page = await browser.newPage();
 
                 try {
@@ -170,7 +170,7 @@ module.exports = {
             }
 
             const browser = await puppeteer.launch({
-                headless: false
+                headless: false, args: ['--no-sandbox']
             });
 
             try {
