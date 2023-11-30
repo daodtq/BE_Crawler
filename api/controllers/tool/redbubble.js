@@ -168,9 +168,7 @@ module.exports = {
                 productLinks = file;
             }
 
-            const browser = await puppeteer.launch({
-                headless: true, args: ['--no-sandbox']
-            });
+            const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'], waitUntil: 'networkidle2', timeout: 60000 });
 
             try {
                 for (let i = 0; i < productLinks.length; i += maxConcurrency) {
@@ -179,6 +177,7 @@ module.exports = {
                     for (let j = 0; j < chunk.length; j++) {
                         const url = chunk[j];
                         const page = await browser.newPage();
+                        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
                         await page.setRequestInterception(true);
                         page.on('request', (request) => {
                             const resourceType = request.resourceType();
