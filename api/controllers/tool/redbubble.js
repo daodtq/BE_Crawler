@@ -29,34 +29,34 @@ const header = [
     "Attribute 5 default", "Meta: hwp_product_gtin"
 ]
 const proxies = [
-    "http://204.9.59.5:41468:zBXgFYrJqcblaZ5:1Yc7K0Pl8nd0vIT",
-    "http://204.9.59.86:43542:p7BQXRoR39VFYqT:1GEmdtdy12QXNFw",
-    "http://45.199.149.229:42346:YrOJXDuMiv8UZoG:80Xk675JBNccYBq",
-    "http://139.171.88.16:48883:ur4ErsJKzsWBZsE:FwlVq4NGsNZdM7A",
-    "http://139.171.88.57:46581:oK0LHqXeLBWz43j:qCOm9YfDCPYt4jE",
-    "http://139.171.90.146:45984:S02mTUTIO3JTnAh:Pv2UmlcAuOm8GSz",
-    "http://139.171.90.208:43063:ygERNBZwyR1XIy2:cyNLgxCGB4czd2G",
-    "http://139.171.90.243:46947:AzWjkQ89FFSmapM:Sv3SgI7PI2H0Ldw",
-    "http://139.171.90.55:41703:g3ynanI5gNEr8ET:FFk6ICKVbKCiyCT",
-    "http://139.171.90.70:49287:XsPPR8LYgcnpzrn:Gw7rmQUxVHDaGtT",
-    "http://139.171.91.77:41169:mXtRrsFp6wB42zE:SwbwIIRrfrxVZjo",
-    "http://204.9.59.140:45966:zLD1BvPp4Hnv224:5cDY4AEM5wwR4MM",
-    "http://204.9.59.241:44223:wVQKSja1wmSEiMB:Qg2o60DU9GEH2B4",
-    "http://207.228.10.73:48205:kpXhN55ja0V4ece:LY2ALwCKdGYZk7S",
-    "http://207.228.27.140:48694:FCyKmAlRszHNoQ1:BqQ2DMt5pRj4q6C",
-    "http://207.228.43.132:41869:uHzRaBX0r2UTglu:jHZeUH5S3RyvcEn",
-    "http://207.228.47.141:49121:TigpqQt47Qzs5IC:GtrCdCf779CBROF",
-    "http://207.228.47.185:49135:k6p4wtFIGhnhm43:w7LiRbRtNp1fP4Z",
-    "http://207.228.51.101:48553:nS3Re6nmy3Ze0pH:K4lEcclP3X0GDzO",
-    "http://207.228.52.83:47570:TC6aSopoBXBZYk9:k9HgvhtTJaKAooC",
-    "http://207.228.54.190:45062:MsXxtFpkCFAl9n6:5hapTrCvTJcfrJd",
-    "http://207.228.60.145:44856:L0ouou6Fji5keWg:UOLrdBzPWjmYfws",
-    "http://207.228.63.23:44241:mYpLu7nOkfvALP5:0EHUGbdBzUzVaZT",
-    "http://107.180.132.21:44575:uw1MFER5nZVNZNL:p5KeD6L8vHzD7dJ",
-    "http://107.180.161.171:47741:A0cnDvhnrLbmvIr:SNXj3MZ6T960ln4",
-    "http://107.180.162.27:45351:HCcf42l5n7oCaw3:oGVCrALQN8MHIsB",
-    "http://107.180.164.251:43372:YcJ72g2t0nS71EI:2CKrJJTYIwxAvjM",
-    "http://107.180.166.122:46811:WroURko2XYIr5O4:uCmOMcvaw0Bntia"
+        "http://204.9.59.5:41468:zBXgFYrJqcblaZ5:1Yc7K0Pl8nd0vIT",
+        "http://204.9.59.86:43542:p7BQXRoR39VFYqT:1GEmdtdy12QXNFw",
+        "http://45.199.149.229:42346:YrOJXDuMiv8UZoG:80Xk675JBNccYBq",
+        "http://139.171.88.16:48883:ur4ErsJKzsWBZsE:FwlVq4NGsNZdM7A",
+        "http://139.171.88.57:46581:oK0LHqXeLBWz43j:qCOm9YfDCPYt4jE",
+        "http://139.171.90.146:45984:S02mTUTIO3JTnAh:Pv2UmlcAuOm8GSz",
+        "http://139.171.90.208:43063:ygERNBZwyR1XIy2:cyNLgxCGB4czd2G",
+        "http://139.171.90.243:46947:AzWjkQ89FFSmapM:Sv3SgI7PI2H0Ldw",
+        "http://139.171.90.55:41703:g3ynanI5gNEr8ET:FFk6ICKVbKCiyCT",
+        "http://139.171.90.70:49287:XsPPR8LYgcnpzrn:Gw7rmQUxVHDaGtT",
+        "http://139.171.91.77:41169:mXtRrsFp6wB42zE:SwbwIIRrfrxVZjo",
+        "http://204.9.59.140:45966:zLD1BvPp4Hnv224:5cDY4AEM5wwR4MM",
+        "http://204.9.59.241:44223:wVQKSja1wmSEiMB:Qg2o60DU9GEH2B4",
+        "http://207.228.10.73:48205:kpXhN55ja0V4ece:LY2ALwCKdGYZk7S",
+        "http://207.228.27.140:48694:FCyKmAlRszHNoQ1:BqQ2DMt5pRj4q6C",
+        "http://207.228.43.132:41869:uHzRaBX0r2UTglu:jHZeUH5S3RyvcEn",
+        "http://207.228.47.141:49121:TigpqQt47Qzs5IC:GtrCdCf779CBROF",
+        "http://207.228.47.185:49135:k6p4wtFIGhnhm43:w7LiRbRtNp1fP4Z",
+        "http://207.228.51.101:48553:nS3Re6nmy3Ze0pH:K4lEcclP3X0GDzO",
+        "http://207.228.52.83:47570:TC6aSopoBXBZYk9:k9HgvhtTJaKAooC",
+        "http://207.228.54.190:45062:MsXxtFpkCFAl9n6:5hapTrCvTJcfrJd",
+        "http://207.228.60.145:44856:L0ouou6Fji5keWg:UOLrdBzPWjmYfws",
+        "http://207.228.63.23:44241:mYpLu7nOkfvALP5:0EHUGbdBzUzVaZT",
+        "http://107.180.132.21:44575:uw1MFER5nZVNZNL:p5KeD6L8vHzD7dJ",
+        "http://107.180.161.171:47741:A0cnDvhnrLbmvIr:SNXj3MZ6T960ln4",
+        "http://107.180.162.27:45351:HCcf42l5n7oCaw3:oGVCrALQN8MHIsB",
+        "http://107.180.164.251:43372:YcJ72g2t0nS71EI:2CKrJJTYIwxAvjM",
+        "http://107.180.166.122:46811:WroURko2XYIr5O4:uCmOMcvaw0Bntia"
 ]
 function getRandomProxy() {
     const randomIndex = Math.floor(Math.random() * proxies.length);
@@ -92,10 +92,7 @@ module.exports = {
                         '--no-sandbox',
                         '--disable-setuid-sandbox',
                         '--disable-gpu',
-                        '--disable-dev-shm-usage',
-                        '--remote-debugging-port=9222',
                     ],
-                    executablePath: '/usr/bin/google-chrome',
                 });
                 const page = await browser.newPage();
                 await page.setUserAgent(userAgent.random().toString())
@@ -105,7 +102,6 @@ module.exports = {
                         try {
                             const urlmain = `${link}?page=${i}/`;
                             await page.goto(urlmain, { waitUntil: 'domcontentloaded' });
-                            console.log(await page.content())
                             const productLinksOnPage = await page.evaluate(() => {
                                 const links = [];
                                 document.querySelectorAll('#SearchResultsGrid > a').forEach(element => {
@@ -176,7 +172,7 @@ module.exports = {
         }
 
         async function fetchAllData() {
-            const maxConcurrency = 5;
+            const maxConcurrency = 15;
             if (type != "link") {
                 productLinks = file;
             }
@@ -187,10 +183,7 @@ module.exports = {
                     '--no-sandbox',
                     '--disable-setuid-sandbox',
                     '--disable-gpu',
-                    '--disable-dev-shm-usage',
-                    '--remote-debugging-port=9222',
                 ],
-                executablePath: '/usr/bin/google-chrome',
             });
 
             try {
