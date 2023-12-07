@@ -217,9 +217,9 @@ function Alltopicsoflife() {
             if (i == 0) {
               let totalMoney = data.total
               if (_data.payment_method_title == "PayPal" || _data.payment_method_title == "Paypal") {
-                totalMoney = _data.meta_data.find(item => item.key === "_cs_paypal_payout").value
+                totalMoney = _data.meta_data.find(item => item.key === "_cs_paypal_payout")?.value || 0
               } else {
-                totalMoney = _data.meta_data.find(item => item.key === "_stripe_net").value;
+                totalMoney = _data.meta_data.find(item => item.key === "_stripe_net")?.value || 0;
               }
               let first = 0
               for (let items of _data.line_items) {
