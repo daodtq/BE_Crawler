@@ -57,6 +57,9 @@ function Egeadcompany() {
               for (let items of _data.line_items) {
                 let meta_data = ""
                 for (let _meta_data of items.meta_data) {
+                  if (_meta_data.display_key.includes("Custom Name/Year/Age/Message") || _meta_data.display_key.includes("Please upload a picture")) {
+                    continue
+                  }
                   if (meta_data != "") {
                     meta_data = `${meta_data}, ${_meta_data.display_key}: ${_meta_data.display_value}`
                   } else {
