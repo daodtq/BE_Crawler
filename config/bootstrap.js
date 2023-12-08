@@ -49,8 +49,10 @@ function Egeadcompany() {
             }
             if (i == 0) {
               let totalMoney = data.total
-              if (_data.payment_method_title == "Paypal") {
+              if (_data.payment_method_title == "Paypal" || _data.payment_method_title == "PayPal") {
                 totalMoney = _data.meta_data.find(item => item.key === "_cs_paypal_payout")?.value || 0
+              } else if (_data.payment_method_title == "Card") {
+                totalMoney = _data.meta_data.find(item => item.key === "_cs_stripe_payout")?.value || 0
               } else {
                 totalMoney = _data.meta_data.find(item => item.key === "_stripe_net")?.value || 0
               }
@@ -141,6 +143,8 @@ function Koreannewsfeeds() {
               let totalMoney = data.total
               if (_data.payment_method_title == "PayPal" || _data.payment_method_title == "Paypal") {
                 totalMoney = _data.meta_data.find(item => item.key === "_cs_paypal_payout")?.value || 0
+              } else if (_data.payment_method_title == "Card") {
+                totalMoney = _data.meta_data.find(item => item.key === "_cs_stripe_payout")?.value || 0
               } else {
                 totalMoney = _data.meta_data.find(item => item.key === "_stripe_net")?.value || 0
               }
@@ -221,6 +225,8 @@ function Alltopicsoflife() {
               let totalMoney = data.total
               if (_data.payment_method_title == "PayPal" || _data.payment_method_title == "Paypal") {
                 totalMoney = _data.meta_data.find(item => item.key === "_cs_paypal_payout")?.value || 0
+              } else if (_data.payment_method_title == "Card") {
+                totalMoney = _data.meta_data.find(item => item.key === "_cs_stripe_payout")?.value || 0
               } else {
                 totalMoney = _data.meta_data.find(item => item.key === "_stripe_net")?.value || 0;
               }
@@ -254,7 +260,7 @@ function Alltopicsoflife() {
 }
 
 cron.schedule('0 * * * *', function () {
-  Egeadcompany();
+Egeadcompany();
 });
 
 cron.schedule('10 * * * *', function () {
