@@ -75,7 +75,7 @@ function Egeadcompany() {
                   range: `GMC!A${nextRow}`,
                   valueInputOption: 'RAW',
                   resource: {
-                    values: [[moment(_data.date_created).format('DD/MM/YYYY'), `#${_data.id}`, "Egeadcompany", _data.payment_method_title, "", "", totalMoney, "", "", items.name, meta_data, "", "", items.meta_data.find(item => item.key === "custom")?.value || "", items.meta_data.find(item => item.key === "customimage")?.value ? (JSON.parse(items.meta_data.find(item => item.key === "customimage")?.value))[0].url : items.meta_data.find(item => item.key === "headcustom")?.value ? (JSON.parse(items.meta_data.find(item => item.key === "headcustom")?.value))[0].url : "", "", `https://egeadcompany.com/?p=${items.product_id}`, items.quantity, `${shipping.first_name} ${shipping.last_name}`, `${shipping.address_1} ${shipping.address_2} ${shipping.city}, ${shipping.state} ${shipping.postcode}`, "", "", "", "", _data.billing.phone, _data.customer_note, _data.billing.email, "", "TA"]], // Thay thế bằng dữ liệu bạn muốn thêm vào
+                    values: [[moment(_data.date_created).format('DD/MM/YYYY'), `#${_data.id}`, "Egeadcompany", _data.payment_method_title == "Card" ? `Stripe${items.meta_data.find(item => item.key === "_mecom_stripe_proxy_url")?.value ? ":" + items.meta_data.find(item => item.key === "_mecom_stripe_proxy_url")?.value.replace("https://", "") : ""}` : _data.payment_method_title =="PayPal" ? `PayPal${items.meta_data.find(item => item.key === "_mecom_paypal_proxy_url")?.value ? ":" + items.meta_data.find(item => item.key === "_mecom_stripe_proxy_url")?.value.replace("https://", "") : ""}` : "Stripe", "", "", totalMoney, "", "", items.name, meta_data, "", "", items.meta_data.find(item => item.key === "custom")?.value || "", items.meta_data.find(item => item.key === "customimage")?.value ? (JSON.parse(items.meta_data.find(item => item.key === "customimage")?.value))[0].url : items.meta_data.find(item => item.key === "headcustom")?.value ? (JSON.parse(items.meta_data.find(item => item.key === "headcustom")?.value))[0].url : "", "", `https://egeadcompany.com/?p=${items.product_id}`, items.quantity, `${shipping.first_name} ${shipping.last_name}`, `${shipping.address_1} ${shipping.address_2} ${shipping.city}, ${shipping.state} ${shipping.postcode}`, "", "", "", "", _data.billing.phone, _data.customer_note, _data.billing.email, "", "TA"]], // Thay thế bằng dữ liệu bạn muốn thêm vào
                   },
                 });
                 nextRow++
@@ -156,7 +156,7 @@ function Koreannewsfeeds() {
                   range: `GMC!A${nextRow}`,
                   valueInputOption: 'RAW',
                   resource: {
-                    values: [[moment(_data.date_created).format('DD/MM/YYYY'), `#${_data.id}`, "Koreannewsfeeds", _data.payment_method_title, "", "", first == 0 ? totalMoney : "", "", "", items.name, `${items.meta_data.find(item => item.key === "pa_type")?.display_value} - ${items.meta_data.find(item => item.key === "pa_size")?.display_value}`, items.meta_data.find(item => item.key === "pa_color")?.display_value, "", "", "", "", `https://koreannewsfeeds.com/?p=${items.product_id}`, items.quantity, `${shipping.first_name} ${shipping.last_name}`, `${shipping.address_1} ${shipping.address_2} ${shipping.city}, ${shipping.state} ${shipping.postcode}`, "", "", "", "", _data.billing.phone, _data.customer_note, _data.billing.email, "", "TA"]], // Thay thế bằng dữ liệu bạn muốn thêm vào
+                    values: [[moment(_data.date_created).format('DD/MM/YYYY'), `#${_data.id}`, "Koreannewsfeeds", _data.payment_method_title == "Card" ? `Stripe${items.meta_data.find(item => item.key === "_mecom_stripe_proxy_url")?.value ? ":" + items.meta_data.find(item => item.key === "_mecom_stripe_proxy_url")?.value.replace("https://", "") : ""}` : _data.payment_method_title =="PayPal" ? `PayPal${items.meta_data.find(item => item.key === "_mecom_paypal_proxy_url")?.value ? ":" + items.meta_data.find(item => item.key === "_mecom_stripe_proxy_url")?.value.replace("https://", "") : ""}` : "Stripe", "", "", first == 0 ? totalMoney : "", "", "", items.name, `${items.meta_data.find(item => item.key === "pa_type")?.display_value} - ${items.meta_data.find(item => item.key === "pa_size")?.display_value}`, items.meta_data.find(item => item.key === "pa_color")?.display_value, "", "", "", "", `https://koreannewsfeeds.com/?p=${items.product_id}`, items.quantity, `${shipping.first_name} ${shipping.last_name}`, `${shipping.address_1} ${shipping.address_2} ${shipping.city}, ${shipping.state} ${shipping.postcode}`, "", "", "", "", _data.billing.phone, _data.customer_note, _data.billing.email, "", "TA"]], // Thay thế bằng dữ liệu bạn muốn thêm vào
                   },
                 });
                 nextRow++
@@ -232,13 +232,14 @@ function Alltopicsoflife() {
               }
               let first = 0
               for (let items of _data.line_items) {
+                console.log(_data.payment_method_title == "Card" ? `Stripe${items.meta_data.find(item => item.key === "_mecom_stripe_proxy_url")?.value ? ":" + items.meta_data.find(item => item.key === "_mecom_stripe_proxy_url")?.value.replace("https://", "") : ""}` : _data.payment_method_title =="PayPal" ? `PayPal${items.meta_data.find(item => item.key === "_mecom_paypal_proxy_url")?.value ? ":" + items.meta_data.find(item => item.key === "_mecom_stripe_proxy_url")?.value.replace("https://", "") : ""}` : "Stripe")
                 let shipping = _data.shipping
                 await sheets.spreadsheets.values.append({
                   spreadsheetId: spreadsheetId,
                   range: `GMC!A${nextRow}`,
                   valueInputOption: 'RAW',
                   resource: {
-                    values: [[moment(_data.date_created).format('DD/MM/YYYY'), `#${_data.id}`, "Alltopicsoflife", _data.payment_method_title, "", "", first == 0 ? totalMoney : "", "", "", items.name, `${items.meta_data.find(item => item.key === "pa_type")?.display_value} - ${items.meta_data.find(item => item.key === "pa_size")?.display_value}`, items.meta_data.find(item => item.key === "pa_color")?.display_value, "", "", "", "", `https://alltopicsoflife.com/?p=${items.product_id}`, items.quantity, `${shipping.first_name} ${shipping.last_name}`, `${shipping.address_1} ${shipping.address_2} ${shipping.city}, ${shipping.state} ${shipping.postcode}`, "", "", "", "", _data.billing.phone, _data.customer_note, _data.billing.email, "", "TA"]], // Thay thế bằng dữ liệu bạn muốn thêm vào
+                    values: [[moment(_data.date_created).format('DD/MM/YYYY'), `#${_data.id}`, "Alltopicsoflife", _data.payment_method_title == "Card" ? `Stripe${items.meta_data.find(item => item.key === "_mecom_stripe_proxy_url")?.value ? ":" + items.meta_data.find(item => item.key === "_mecom_stripe_proxy_url")?.value.replace("https://", "") : ""}` : _data.payment_method_title =="PayPal" ? `PayPal${items.meta_data.find(item => item.key === "_mecom_paypal_proxy_url")?.value ? ":" + items.meta_data.find(item => item.key === "_mecom_stripe_proxy_url")?.value.replace("https://", "") : ""}` : "Stripe", "", "", first == 0 ? totalMoney : "", "", "", items.name, `${items.meta_data.find(item => item.key === "pa_type")?.display_value} - ${items.meta_data.find(item => item.key === "pa_size")?.display_value}`, items.meta_data.find(item => item.key === "pa_color")?.display_value, "", "", "", "", `https://alltopicsoflife.com/?p=${items.product_id}`, items.quantity, `${shipping.first_name} ${shipping.last_name}`, `${shipping.address_1} ${shipping.address_2} ${shipping.city}, ${shipping.state} ${shipping.postcode}`, "", "", "", "", _data.billing.phone, _data.customer_note, _data.billing.email, "", "TA"]], // Thay thế bằng dữ liệu bạn muốn thêm vào
                   },
                 });
                 nextRow++
@@ -260,11 +261,11 @@ function Alltopicsoflife() {
 }
 
 cron.schedule('0 * * * *', function () {
-Egeadcompany();
+  Egeadcompany();
 });
 
 cron.schedule('10 * * * *', function () {
-  Koreannewsfeeds()
+Koreannewsfeeds()
 });
 
 cron.schedule('20 * * * *', function () {
