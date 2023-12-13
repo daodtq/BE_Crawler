@@ -26,7 +26,7 @@ function Egeadcompany() {
       try {
         const response = await sheets.spreadsheets.values.get({
           spreadsheetId: spreadsheetId,
-          range: 'GMC!B:B',
+          range: 'GMC!B:C',
         });
 
         const existingData = response.data.values || [];
@@ -35,14 +35,18 @@ function Egeadcompany() {
         const values = response.data.values;
         if (values && values.length > 0) {
           // Extract column B data and store it in an array
-          const columnBData = values.map(row => row[0] ? row[0].replace(/#/g, "") : null);
+          const columnBData = values.map(row => {
+            const modifiedRow = row[0] ? row[0].replace(/#/g, "") : null;
+            const newRow = modifiedRow + row[1];
+            return newRow;
+          });
           for (let _data of data) {
             if (_data.billing.first_name == "Quang Đạo") {
               continue
             }
             let i = 0
             for (let idB of columnBData) {
-              if (String(_data.id) == idB) {
+              if (String(_data.id) + "Egeadcompany" == idB) {
                 i = 1
                 break
               }
@@ -70,8 +74,6 @@ function Egeadcompany() {
                   }
                 }
                 let shipping = _data.shipping
-                console.log(items.meta_data)
-                // console.log(`PayPal${items.meta_data.find(item => item.key === "_mecom_paypal_proxy_url")?.value ? ":" + items.meta_data.find(item => item.key === "_mecom_stripe_proxy_url")?.value.replace("https://", "") : ""}`)
                 await sheets.spreadsheets.values.append({
                   spreadsheetId: spreadsheetId,
                   range: `GMC!A${nextRow}`,
@@ -120,7 +122,7 @@ function Koreannewsfeeds() {
       try {
         const response = await sheets.spreadsheets.values.get({
           spreadsheetId: spreadsheetId,
-          range: 'GMC!B:B',
+          range: 'GMC!B:C',
         });
 
         const existingData = response.data.values || [];
@@ -129,14 +131,18 @@ function Koreannewsfeeds() {
         const values = response.data.values;
         if (values && values.length > 0) {
           // Extract column B data and store it in an array
-          const columnBData = values.map(row => row[0] ? row[0].replace(/#/g, "") : null);
+          const columnBData = values.map(row => {
+            const modifiedRow = row[0] ? row[0].replace(/#/g, "") : null;
+            const newRow = modifiedRow + row[1];
+            return newRow;
+          });
           for (let _data of data) {
             if (_data.billing.first_name == "Quang Đạo") {
               continue
             }
             let i = 0
             for (let idB of columnBData) {
-              if (String(_data.id) == idB) {
+              if (String(_data.id) + "Koreannewsfeeds" == idB) {
                 i = 1
                 break
               }
@@ -158,7 +164,7 @@ function Koreannewsfeeds() {
                   range: `GMC!A${nextRow}`,
                   valueInputOption: 'RAW',
                   resource: {
-                    values: [[moment(_data.date_created).format('DD/MM/YYYY'), `#${_data.id}`, "Koreannewsfeeds", _data.payment_method_title == "Card" ? `Stripe${_data.meta_data.find(item => item.key === "_mecom_stripe_proxy_url")?.value ? ":" + _data.meta_data.find(item => item.key === "_mecom_stripe_proxy_url")?.value.replace("https://", "") : ""}` : _data.payment_method_title == "PayPal" ? `PayPal${_data.meta_data.find(item => item.key === "_mecom_paypal_proxy_url")?.value ? ":" + _data.meta_data.find(item => item.key === "_mecom_paypal_proxy_url")?.value.replace("https://", "") : ""}` : "Stripe", "", "", first == 0 ? totalMoney : "", "", "", items.name, `${items.meta_data.find(item => item.key === "pa_type")?.display_value} - ${items.meta_data.find(item => item.key === "pa_size")?.display_value}`, items.meta_data.find(item => item.key === "pa_color")?.display_value, "", "", "", "", `https://koreannewsfeeds.com/?p=${items.product_id}`, items.quantity, `${shipping.first_name} ${shipping.last_name}`, `${shipping.address_1} ${shipping.address_2} ${shipping.city}, ${shipping.state} ${shipping.postcode}`, "", "", "", "", _data.billing.phone, _data.customer_note, _data.billing.email, "", "TA"]], // Thay thế bằng dữ liệu bạn muốn thêm vào
+                    values: [[moment(_data.date_created).format('DD/MM/YYYY'), `#${_data.id}`, "Koreannewsfeeds", _data.payment_method_title == "Card" ? `Stripe${_data.meta_data.find(item => item.key === "_mecom_stripe_proxy_url")?.value ? ":" + _data.meta_data.find(item => item.key === "_mecom_stripe_proxy_url")?.value.replace("https://", "") : ""}` : _data.payment_method_title == "PayPal" ? `PayPal${_data.meta_data.find(item => item.key === "_mecom_paypal_proxy_url")?.value ? ":" + _data.meta_data.find(item => item.key === "_mecom_paypal_proxy_url")?.value.replace("https://", "") : ""}` : "Stripe", "", "", first == 0 ? totalMoney : "", "", "", items.name, `${items.meta_data.find(item => item.key === "pa_type")?.display_value ? items.meta_data.find(item => item.key === "pa_type")?.display_value + " - " : ""}${items.meta_data.find(item => item.key === "pa_size")?.display_value}`, items.meta_data.find(item => item.key === "pa_color")?.display_value, "", "", "", "", `https://koreannewsfeeds.com/?p=${items.product_id}`, items.quantity, `${shipping.first_name} ${shipping.last_name}`, `${shipping.address_1} ${shipping.address_2} ${shipping.city}, ${shipping.state} ${shipping.postcode}`, "", "", "", "", _data.billing.phone, _data.customer_note, _data.billing.email, "", "TA"]], // Thay thế bằng dữ liệu bạn muốn thêm vào
                   },
                 });
                 nextRow++
@@ -202,7 +208,7 @@ function Alltopicsoflife() {
       try {
         const response = await sheets.spreadsheets.values.get({
           spreadsheetId: spreadsheetId,
-          range: 'GMC!B:B',
+          range: 'GMC!B:C',
         });
 
         const existingData = response.data.values || [];
@@ -211,14 +217,18 @@ function Alltopicsoflife() {
         const values = response.data.values;
         if (values && values.length > 0) {
           // Extract column B data and store it in an array
-          const columnBData = values.map(row => row[0] ? row[0].replace(/#/g, "") : null);
+          const columnBData = values.map(row => {
+            const modifiedRow = row[0] ? row[0].replace(/#/g, "") : null;
+            const newRow = modifiedRow + row[1];
+            return newRow;
+          });
           for (let _data of data) {
             if (_data.billing.first_name == "Quang Đạo") {
               continue
             }
             let i = 0
             for (let idB of columnBData) {
-              if (String(_data.id) == idB) {
+              if (String(_data.id) + "Alltopicsoflife" == idB) {
                 i = 1
                 break
               }
@@ -240,7 +250,7 @@ function Alltopicsoflife() {
                   range: `GMC!A${nextRow}`,
                   valueInputOption: 'RAW',
                   resource: {
-                    values: [[moment(_data.date_created).format('DD/MM/YYYY'), `#${_data.id}`, "Alltopicsoflife", _data.payment_method_title == "Card" ? `Stripe${_data.meta_data.find(item => item.key === "_mecom_stripe_proxy_url")?.value ? ":" + _data.meta_data.find(item => item.key === "_mecom_stripe_proxy_url")?.value.replace("https://", "") : ""}` : _data.payment_method_title == "PayPal" ? `PayPal${_data.meta_data.find(item => item.key === "_mecom_paypal_proxy_url")?.value ? ":" + _data.meta_data.find(item => item.key === "_mecom_paypal_proxy_url")?.value.replace("https://", "") : ""}` : "Stripe", "", "", first == 0 ? totalMoney : "", "", "", items.name, `${items.meta_data.find(item => item.key === "pa_type")?.display_value} - ${items.meta_data.find(item => item.key === "pa_size")?.display_value}`, items.meta_data.find(item => item.key === "pa_color")?.display_value, "", "", "", "", `https://alltopicsoflife.com/?p=${items.product_id}`, items.quantity, `${shipping.first_name} ${shipping.last_name}`, `${shipping.address_1} ${shipping.address_2} ${shipping.city}, ${shipping.state} ${shipping.postcode}`, "", "", "", "", _data.billing.phone, _data.customer_note, _data.billing.email, "", "TA"]], // Thay thế bằng dữ liệu bạn muốn thêm vào
+                    values: [[moment(_data.date_created).format('DD/MM/YYYY'), `#${_data.id}`, "Alltopicsoflife", _data.payment_method_title == "Card" ? `Stripe${_data.meta_data.find(item => item.key === "_mecom_stripe_proxy_url")?.value ? ":" + _data.meta_data.find(item => item.key === "_mecom_stripe_proxy_url")?.value.replace("https://", "") : ""}` : _data.payment_method_title == "PayPal" ? `PayPal${_data.meta_data.find(item => item.key === "_mecom_paypal_proxy_url")?.value ? ":" + _data.meta_data.find(item => item.key === "_mecom_paypal_proxy_url")?.value.replace("https://", "") : ""}` : "Stripe", "", "", first == 0 ? totalMoney : "", "", "", items.name, `${items.meta_data.find(item => item.key === "pa_type")?.display_value ? items.meta_data.find(item => item.key === "pa_type")?.display_value + " - " : ""}${items.meta_data.find(item => item.key === "pa_size")?.display_value}`, items.meta_data.find(item => item.key === "pa_color")?.display_value, "", "", "", "", `https://alltopicsoflife.com/?p=${items.product_id}`, items.quantity, `${shipping.first_name} ${shipping.last_name}`, `${shipping.address_1} ${shipping.address_2} ${shipping.city}, ${shipping.state} ${shipping.postcode}`, "", "", "", "", _data.billing.phone, _data.customer_note, _data.billing.email, "", "TA"]], // Thay thế bằng dữ liệu bạn muốn thêm vào
                   },
                 });
                 nextRow++
@@ -262,11 +272,11 @@ function Alltopicsoflife() {
 }
 
 cron.schedule('0 * * * *', function () {
-  Egeadcompany();
+Egeadcompany();
 });
 
 cron.schedule('10 * * * *', function () {
-  Koreannewsfeeds()
+Koreannewsfeeds()
 });
 
 cron.schedule('20 * * * *', function () {
