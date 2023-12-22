@@ -49,11 +49,14 @@ module.exports.http = {
     *                                                                          *
     ***************************************************************************/
 
-    // bodyParser: (function _configureBodyParser(){
-    //   var skipper = require('skipper');
-    //   var middlewareFn = skipper({ strict: true });
-    //   return middlewareFn;
-    // })(),
+    bodyParser: (function () {
+      const skipper = require('skipper')({
+        strict: true,
+        limit: '100mb' // Tăng giới hạn lên 100 MB hoặc giá trị mong muốn
+      });
+
+      return skipper;
+    })(),
 
   },
 
