@@ -23,20 +23,20 @@ const uploadImage = async (url) => {
         const response = await axios.get(url, { responseType: 'arraybuffer' });
         // Step 3: Define the parameters for the object you want to upload.
         const params = {
-            Bucket: "koreannewsfeeds", // The path to the directory you want to upload the object to, starting with your Space name.
+            Bucket: "imagecloud", // The path to the directory you want to upload the object to, starting with your Space name.
             Key: `${myRandomId}.jpg`, // Object key, referenced whenever you want to access this file later.
             Body: Buffer.from(response.data),
             ContentType: "image/jpeg"
         };
         const data = await s3Client.send(new PutObjectCommand(params));
         const aclParams = {
-            Bucket: "koreannewsfeeds", // Thay thế bằng tên Space của bạn.
+            Bucket: "imagecloud", // Thay thế bằng tên Space của bạn.
             Key: `${myRandomId}.jpg`, // Tên tệp hình ảnh đã tải lên.
             ACL: 'public-read', // Đặt quyền truy cập là công khai
         };
         // Thực hiện cấu hình ACL
         await s3Client.send(new PutObjectAclCommand(aclParams));
-        return `https://koreannewsfeeds.nyc3.digitaloceanspaces.com/${myRandomId}.jpg`
+        return `https://imagecloud.nyc3.digitaloceanspaces.com/${myRandomId}.jpg`
     } catch (error) {
         return "Url ảnh không thể convert!"
     }
