@@ -77,98 +77,12 @@ function Egeadcompany() {
                 await sheets.spreadsheets.values.append({
                   spreadsheetId: spreadsheetId,
                   range: `GMC!A${nextRow}`,
-                  valueInputOption: 'RAW',
+                  valueInputOption: 'USER_ENTERED',
                   resource: {
-                    values: [[moment(_data.date_created).format('DD/MM/YYYY'), `#${_data.id}`, "Egeadcompany", _data.payment_method_title == "Card" ? `Stripe${_data.meta_data.find(item => item.key === "_mecom_stripe_proxy_url")?.value ? ":" + _data.meta_data.find(item => item.key === "_mecom_stripe_proxy_url")?.value.replace("https://", "") : ""}` : _data.payment_method_title == "PayPal" ? `PayPal${_data.meta_data.find(item => item.key === "_mecom_paypal_proxy_url")?.value ? ":" + _data.meta_data.find(item => item.key === "_mecom_paypal_proxy_url")?.value.replace("https://", "") : ""}` : "Stripe", "", "", totalMoney, "", "", items.name, meta_data, "", "", items.meta_data.find(item => item.key === "custom")?.value || "", items.meta_data.find(item => item.key === "customimage")?.value ? (JSON.parse(items.meta_data.find(item => item.key === "customimage")?.value))[0].url : items.meta_data.find(item => item.key === "headcustom")?.value ? (JSON.parse(items.meta_data.find(item => item.key === "headcustom")?.value))[0].url : "", "", `https://egeadcompany.com/?p=${items.product_id}`, items.quantity, `${shipping.first_name} ${shipping.last_name}`, `${shipping.address_1} ${shipping.address_2} ${shipping.city}, ${shipping.state} ${shipping.postcode}`, "", "", "", "", _data.billing.phone, _data.customer_note, _data.billing.email, "", "TA"]], // Thay thế bằng dữ liệu bạn muốn thêm vào
+                    values: [[moment(_data.date_created).format('MM/DD/YYYY'), `#${_data.id}`, "Egeadcompany", _data.payment_method_title == "Card" ? `Stripe${_data.meta_data.find(item => item.key === "_mecom_stripe_proxy_url")?.value ? ":" + _data.meta_data.find(item => item.key === "_mecom_stripe_proxy_url")?.value.replace("https://", "") : ""}` : _data.payment_method_title == "PayPal" ? `PayPal${_data.meta_data.find(item => item.key === "_mecom_paypal_proxy_url")?.value ? ":" + _data.meta_data.find(item => item.key === "_mecom_paypal_proxy_url")?.value.replace("https://", "") : ""}` : "Stripe", "", "", totalMoney, "", "", items.name, meta_data, "", items.sku, items.meta_data.find(item => item.key === "custom")?.value || "", items.meta_data.find(item => item.key === "customimage")?.value ? (JSON.parse(items.meta_data.find(item => item.key === "customimage")?.value))[0].url : items.meta_data.find(item => item.key === "headcustom")?.value ? (JSON.parse(items.meta_data.find(item => item.key === "headcustom")?.value))[0].url : "", "", `https://egeadcompany.com/?p=${items.product_id}`, items.quantity, `${shipping.first_name} ${shipping.last_name}`, `${shipping.address_1} ${shipping.address_2} ${shipping.city}, ${shipping.state} ${shipping.postcode}`, "", "", "", "", _data.billing.phone, _data.customer_note, _data.billing.email, "", "TA"]], // Thay thế bằng dữ liệu bạn muốn thêm vào
                   },
                 });
                 nextRow++
-              }
-            }
-          }
-
-        } else {
-          console.log('No data found in column B.');
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
-}
-
-function Koreannewsfeeds() {
-  const spreadsheetId = '1ZjoiBf3OnyYf_LDXQiBPz-ook6g3TjoAZKuhDbMZK00';
-  const startOfYesterday = moment().subtract(1, 'days').startOf('day').toISOString();
-  const endOfToday = moment().endOf('day').toISOString();
-  const url = `https://koreannewsfeeds.com/wp-json/wc/v3/orders?consumer_key=ck_5a0378a496b6dac5214b11e9dffce61e52305000&consumer_secret=cs_5b4090e07388a45930f4229571493e4c497563b2&status=processing&after=${startOfYesterday}&before=${endOfToday}`
-  fetch(url)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      return response.json();
-    })
-    .then(async data => {
-      const auth = new google.auth.JWT({
-        email: credentials.client_email,
-        key: credentials.private_key,
-        scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-      });
-      const sheets = google.sheets({ version: 'v4', auth });
-
-      try {
-        const response = await sheets.spreadsheets.values.get({
-          spreadsheetId: spreadsheetId,
-          range: 'GMC!B:C',
-        });
-
-        const existingData = response.data.values || [];
-        let nextRow = existingData.length + 1;
-
-        const values = response.data.values;
-        if (values && values.length > 0) {
-          // Extract column B data and store it in an array
-          const columnBData = values.map(row => {
-            const modifiedRow = row[0] ? row[0].replace(/#/g, "") : null;
-            const newRow = modifiedRow + row[1];
-            return newRow;
-          });
-          for (let _data of data) {
-            if (_data.billing.first_name == "Quang Đạo") {
-              continue
-            }
-            let i = 0
-            for (let idB of columnBData) {
-              if (String(_data.id) + "Koreannewsfeeds" == idB) {
-                i = 1
-                break
-              }
-            }
-            if (i == 0) {
-              let totalMoney = data.total
-              if (_data.payment_method_title == "PayPal" || _data.payment_method_title == "Paypal") {
-                totalMoney = _data.meta_data.find(item => item.key === "_cs_paypal_payout")?.value || 0
-              } else if (_data.payment_method_title == "Card") {
-                totalMoney = _data.meta_data.find(item => item.key === "_cs_stripe_payout")?.value || 0
-              } else {
-                totalMoney = _data.meta_data.find(item => item.key === "_stripe_net")?.value || 0
-              }
-              let first = 0
-              for (let items of _data.line_items) {
-                let shipping = _data.shipping
-                await sheets.spreadsheets.values.append({
-                  spreadsheetId: spreadsheetId,
-                  range: `GMC!A${nextRow}`,
-                  valueInputOption: 'RAW',
-                  resource: {
-                    values: [[moment(_data.date_created).format('DD/MM/YYYY'), `#${_data.id}`, "Koreannewsfeeds", _data.payment_method_title == "Card" ? `Stripe${_data.meta_data.find(item => item.key === "_mecom_stripe_proxy_url")?.value ? ":" + _data.meta_data.find(item => item.key === "_mecom_stripe_proxy_url")?.value.replace("https://", "") : ""}` : _data.payment_method_title == "PayPal" ? `PayPal${_data.meta_data.find(item => item.key === "_mecom_paypal_proxy_url")?.value ? ":" + _data.meta_data.find(item => item.key === "_mecom_paypal_proxy_url")?.value.replace("https://", "") : ""}` : "Stripe", "", "", first == 0 ? totalMoney : "", "", "", items.name, `${items.meta_data.find(item => item.key === "pa_type")?.display_value ? items.meta_data.find(item => item.key === "pa_type")?.display_value + " - " : ""}${items.meta_data.find(item => item.key === "pa_size")?.display_value}`, items.meta_data.find(item => item.key === "pa_color")?.display_value, "", "", "", "", `https://koreannewsfeeds.com/?p=${items.product_id}`, items.quantity, `${shipping.first_name} ${shipping.last_name}`, `${shipping.address_1} ${shipping.address_2} ${shipping.city}, ${shipping.state} ${shipping.postcode}`, "", "", "", "", _data.billing.phone, _data.customer_note, _data.billing.email, "", "TA"]], // Thay thế bằng dữ liệu bạn muốn thêm vào
-                  },
-                });
-                nextRow++
-                first++
               }
             }
           }
@@ -248,9 +162,9 @@ function Alltopicsoflife() {
                 await sheets.spreadsheets.values.append({
                   spreadsheetId: spreadsheetId,
                   range: `GMC!A${nextRow}`,
-                  valueInputOption: 'RAW',
+                  valueInputOption: 'USER_ENTERED',
                   resource: {
-                    values: [[moment(_data.date_created).format('DD/MM/YYYY'), `#${_data.id}`, "Alltopicsoflife", _data.payment_method_title == "Card" ? `Stripe${_data.meta_data.find(item => item.key === "_mecom_stripe_proxy_url")?.value ? ":" + _data.meta_data.find(item => item.key === "_mecom_stripe_proxy_url")?.value.replace("https://", "") : ""}` : _data.payment_method_title == "PayPal" ? `PayPal${_data.meta_data.find(item => item.key === "_mecom_paypal_proxy_url")?.value ? ":" + _data.meta_data.find(item => item.key === "_mecom_paypal_proxy_url")?.value.replace("https://", "") : ""}` : "Stripe", "", "", first == 0 ? totalMoney : "", "", "", items.name, `${items.meta_data.find(item => item.key === "pa_type")?.display_value ? items.meta_data.find(item => item.key === "pa_type")?.display_value + " - " : ""}${items.meta_data.find(item => item.key === "pa_size")?.display_value}`, items.meta_data.find(item => item.key === "pa_color")?.display_value, "", "", "", "", `https://alltopicsoflife.com/?p=${items.product_id}`, items.quantity, `${shipping.first_name} ${shipping.last_name}`, `${shipping.address_1} ${shipping.address_2} ${shipping.city}, ${shipping.state} ${shipping.postcode}`, "", "", "", "", _data.billing.phone, _data.customer_note, _data.billing.email, "", "TA"]], // Thay thế bằng dữ liệu bạn muốn thêm vào
+                    values: [[moment(_data.date_created).format('MM/DD/YYYY'), `#${_data.id}`, "Alltopicsoflife", _data.payment_method_title == "Card" ? `Stripe${_data.meta_data.find(item => item.key === "_mecom_stripe_proxy_url")?.value ? ":" + _data.meta_data.find(item => item.key === "_mecom_stripe_proxy_url")?.value.replace("https://", "") : ""}` : _data.payment_method_title == "PayPal" ? `PayPal${_data.meta_data.find(item => item.key === "_mecom_paypal_proxy_url")?.value ? ":" + _data.meta_data.find(item => item.key === "_mecom_paypal_proxy_url")?.value.replace("https://", "") : ""}` : "Stripe", "", "", first == 0 ? totalMoney : "", "", "", items.name, `${items.meta_data.find(item => item.key === "pa_type")?.display_value ? items.meta_data.find(item => item.key === "pa_type")?.display_value + " - " : ""}${items.meta_data.find(item => item.key === "pa_size")?.display_value}`, items.meta_data.find(item => item.key === "pa_color")?.display_value, items.sku, "", "", "", `https://alltopicsoflife.com/?p=${items.product_id}`, items.quantity, `${shipping.first_name} ${shipping.last_name}`, `${shipping.address_1} ${shipping.address_2} ${shipping.city}, ${shipping.state} ${shipping.postcode}`, "", "", "", "", _data.billing.phone, _data.customer_note, _data.billing.email, "", "TA"]], // Thay thế bằng dữ liệu bạn muốn thêm vào
                   },
                 });
                 nextRow++
@@ -272,12 +186,8 @@ function Alltopicsoflife() {
 }
 
 cron.schedule('0 * * * *', function () {
-Egeadcompany();
+  Egeadcompany();
 });
-
-// cron.schedule('10 * * * *', function () {
-// Koreannewsfeeds()
-// });
 
 cron.schedule('20 * * * *', function () {
   Alltopicsoflife()
