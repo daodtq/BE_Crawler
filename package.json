@@ -18,6 +18,7 @@
     "exceljs": "^4.4.0",
     "fast-csv": "^4.3.6",
     "googleapis": "^127.0.0",
+    "image-size": "^1.0.2",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.43",

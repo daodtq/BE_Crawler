@@ -15,37 +15,47 @@ module.exports = {
         const productLinks = [];
         let allData = []
         const fetchListingData = async () => {
-            for (let i = 1; i <= 1; i++) {
-                const urlmain = `https://amomentofnow.com/search?q=enamel+mug&options%5Bprefix%5D=last&type=product`
+            for (let i = 1; i <= 14; i++) {
+                const urlmain = i == 1 ? `https://www.itshot.com/watches/mens-diamond-watches?limit=72` : `https://www.itshot.com/watches/mens-diamond-watches?limit=72&p=${i}`
                 const response = await fetch(urlmain, {
                     method: 'GET',
                 });
                 const body = await response.text();
                 const $ = cheerio.load(body);
-                const _resP = $('#main-collection-product-grid > li > div > div > div.card-product > div > div.card-media.card-media--portrait.media--hover-effect.has-compare.media--loading-effect > a');
+                const _resP = $('.product-name');
 
                 _resP.each((index, element) => {
+                    if (i == 1 && index < 4) {
+                        return
+                    }
                     const product_link = $(element).attr('href');
-                    productLinks.push(`https://amomentofnow.com/${product_link}`);
+                    productLinks.push(product_link);
                 });
 
             }
             for (let _url of productLinks) {
-                const response = await fetch(_url, {
-                    method: 'GET',
-                });
-                const body = await response.text();
-                const $ = cheerio.load(body);
+                try {
+                    const response = await fetch(_url, {
+                        method: 'GET',
+                    });
+                    const body = await response.text();
+                    const $ = cheerio.load(body);
 
-                const imageUrl = []
-                const title = $('.productView-title > span').text();
-                const descriptionHtml = $('#tab-description-mobile > div.tab-popup-content').html(); 
-                const price = "30"
-                
-                $('.product-single__media > .media').each(function () {
-                    imageUrl.push(`https:${$(this).attr('href')}`);
-                });
-                allData.push({ title, descriptionHtml, price, imageUrl: imageUrl.join(", ") })
+                    const imageUrl = []
+                    const title = $('#product-name-desktop > h1').text();
+                    const descriptionHtml = `${$('.description-detail').html()}${$('.detail-content').html()}`
+                    let price = $('span.price:eq(1)').text();
+                    price = price.replace("\n", "").replace(",", "").replace("$", "")
+                    $('#amasty_gallery > span').each(function () {
+                        const dataImage = $(this).attr('data-image');
+                        console.log(dataImage);
+                        imageUrl.push(dataImage);
+                    });
+                    console.log({ title, descriptionHtml, price, imageUrl: imageUrl.join(", ") })
+                    allData.push({ title, descriptionHtml, price, imageUrl: imageUrl.join(", ") })
+                } catch (error) {
+                    console.log("ERROR", _url)
+                }
             }
 
         }

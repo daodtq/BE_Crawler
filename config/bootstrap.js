@@ -3,6 +3,9 @@ const { google } = require("googleapis");
 const moment = require('moment');
 const fetch = require('node-fetch');
 const credentials = require("./credentials.json");
+const sizeOf = require('image-size');
+const { Readable } = require('stream');
+const axios = require('axios');
 function Egeadcompany() {
   const spreadsheetId = '1ZjoiBf3OnyYf_LDXQiBPz-ook6g3TjoAZKuhDbMZK00';
   const startOfYesterday = moment().subtract(1, 'days').startOf('day').toISOString();
@@ -184,6 +187,109 @@ function Alltopicsoflife() {
       console.error('Error:', error);
     });
 }
+
+async function CheckImageNotQuality() {
+  const spreadsheetId = '1_nYQhMHPXqV2tEbQvRB9IK1pv-ThPUhlou0QwXyq5pQ';
+  const auth = new google.auth.JWT({
+    email: credentials.client_email,
+    key: credentials.private_key,
+    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+  });
+  const sheets = google.sheets({ version: 'v4', auth });
+
+  try {
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: spreadsheetId,
+      range: 'Ảnh lỗi!B2:B',
+    });
+    const existingData = response.data.values || [];
+    for (let [index, image] of existingData.entries()) {
+      let width = 0
+      let height = 0
+      try {
+        const response = await axios.get(image, { responseType: 'arraybuffer' });
+        const buffer = Buffer.from(response.data);
+        const dimensions = sizeOf(buffer);
+        width = dimensions.width;
+        if (width < 300 && height < 400) {
+          await sheets.spreadsheets.batchUpdate({
+            spreadsheetId: spreadsheetId,
+            resource: {
+              requests: [
+                {
+                  updateCells: {
+                    rows: [
+                      {
+                        values: [
+                          {
+                            userEnteredFormat: {
+                              backgroundColor: {
+                                red: 1.0,
+                                green: 0.0,
+                                blue: 0.0,
+                              },
+                            },
+                          },
+                        ],
+                      },
+                    ],
+                    fields: 'userEnteredFormat.backgroundColor',
+                    start: {
+                      sheetId: 1082321244,
+                      rowIndex: index + 1,
+                      columnIndex: 4,
+                    },
+                  },
+                },
+              ],
+            },
+          });
+        }
+      } catch (error) {
+        await sheets.spreadsheets.batchUpdate({
+          spreadsheetId: spreadsheetId,
+          resource: {
+            requests: [
+              {
+                updateCells: {
+                  rows: [
+                    {
+                      values: [
+                        {
+                          userEnteredFormat: {
+                            backgroundColor: {
+                              red: 1.0,
+                              green: 0.0,
+                              blue: 0.0,
+                            },
+                          },
+                        },
+                      ],
+                    },
+                  ],
+                  fields: 'userEnteredFormat.backgroundColor',
+                  start: {
+                    sheetId: 1082321244,
+                    rowIndex: index + 1,
+                    columnIndex: 3,
+                  },
+                },
+              },
+            ],
+          },
+        });
+        console.log(error)
+        continue
+      }
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+cron.schedule('30 * * * *', function () {
+  CheckImageNotQuality();
+});
 
 cron.schedule('0 * * * *', function () {
   Egeadcompany();
