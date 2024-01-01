@@ -56,9 +56,9 @@ function Egeadcompany() {
             }
             if (i == 0) {
               let totalMoney = _data.total
-              // if (_data.payment_method_title == "Paypal" || _data.payment_method_title == "PayPal") {
+              // if (_data.payment_method_title == "PayPal" || _data.payment_method_title == "Credit Card Payment using Paypal secure" || _data.payment_method_title == "PayPal") {
               //   totalMoney = _data.meta_data.find(item => item.key === "_cs_paypal_payout")?.value || 0
-              // } else if (_data.payment_method_title == "Card") {
+              // } else if ( _data.payment_method_title == "Card" || _data.payment_method_title == "Credit/Debit Card" ) {
               //   totalMoney = _data.meta_data.find(item => item.key === "_cs_stripe_payout")?.value || 0
               // } else {
               //   totalMoney = _data.meta_data.find(item => item.key === "_stripe_net")?.value || 0
@@ -82,7 +82,7 @@ function Egeadcompany() {
                   range: `GMC!A${nextRow}`,
                   valueInputOption: 'USER_ENTERED',
                   resource: {
-                    values: [[moment(_data.date_created).format('MM/DD/YYYY'), `#${_data.id}`, "Egeadcompany", _data.payment_method_title == "Card" ? `Stripe${_data.meta_data.find(item => item.key === "_aff_stripe_proxy_url")?.value ? ":" + _data.meta_data.find(item => item.key === "_aff_stripe_proxy_url")?.value.replace("https://", "") : ""}` : _data.payment_method_title == "PayPal" ? `PayPal${_data.meta_data.find(item => item.key === "_aff_paypal_proxy_url")?.value ? ":" + _data.meta_data.find(item => item.key === "_aff_paypal_proxy_url")?.value.replace("https://", "") : ""}` : "Stripe", "", "", totalMoney, "", "", items.name, meta_data, "", items.sku, items.meta_data.find(item => item.key === "custom")?.value || "", items.meta_data.find(item => item.key === "customimage")?.value ? (JSON.parse(items.meta_data.find(item => item.key === "customimage")?.value))[0].url : items.meta_data.find(item => item.key === "headcustom")?.value ? (JSON.parse(items.meta_data.find(item => item.key === "headcustom")?.value))[0].url : "", "", `https://egeadcompany.com/?p=${items.product_id}`, items.quantity, `${shipping.first_name} ${shipping.last_name}`, `${shipping.address_1} ${shipping.address_2} ${shipping.city}, ${shipping.state} ${shipping.postcode}`, "", "", "", "", _data.billing.phone, _data.customer_note, _data.billing.email, "", "TA"]], // Thay thế bằng dữ liệu bạn muốn thêm vào
+                    values: [[moment(_data.date_created).format('MM/DD/YYYY'), `#${_data.id}`, "Egeadcompany",  _data.payment_method_title == "Card" || _data.payment_method_title == "Credit/Debit Card"  ? `Stripe${_data.meta_data.find(item => item.key === "_aff_stripe_proxy_url")?.value ? ":" + _data.meta_data.find(item => item.key === "_aff_stripe_proxy_url")?.value.replace("https://", "") : ""}` : _data.payment_method_title == "PayPal" || _data.payment_method_title == "Credit Card Payment using Paypal secure" ? `PayPal${_data.meta_data.find(item => item.key === "_aff_paypal_proxy_url")?.value ? ":" + _data.meta_data.find(item => item.key === "_aff_paypal_proxy_url")?.value.replace("https://", "") : ""}` : "Stripe", "", "", totalMoney, "", "", items.name, meta_data, "", items.sku, items.meta_data.find(item => item.key === "custom")?.value || "", items.meta_data.find(item => item.key === "customimage")?.value ? (JSON.parse(items.meta_data.find(item => item.key === "customimage")?.value))[0].url : items.meta_data.find(item => item.key === "headcustom")?.value ? (JSON.parse(items.meta_data.find(item => item.key === "headcustom")?.value))[0].url : "", "", `https://egeadcompany.com/?p=${items.product_id}`, items.quantity, `${shipping.first_name} ${shipping.last_name}`, `${shipping.address_1} ${shipping.address_2} ${shipping.city}, ${shipping.state} ${shipping.postcode}`, "", "", "", "", _data.billing.phone, _data.customer_note, _data.billing.email, "", "TA"]], // Thay thế bằng dữ liệu bạn muốn thêm vào
                   },
                 });
                 nextRow++
@@ -152,9 +152,9 @@ function Alltopicsoflife() {
             }
             if (i == 0) {
               let totalMoney = _data.total
-              // if (_data.payment_method_title == "PayPal" || _data.payment_method_title == "Paypal") {
+              // if (_data.payment_method_title == "PayPal" || _data.payment_method_title == "Credit Card Payment using Paypal secure" || _data.payment_method_title == "Paypal") {
               //   totalMoney = _data.meta_data.find(item => item.key === "_cs_paypal_payout")?.value || 0
-              // } else if (_data.payment_method_title == "Card") {
+              // } else if ( _data.payment_method_title == "Card" || _data.payment_method_title == "Credit/Debit Card" ) {
               //   totalMoney = _data.meta_data.find(item => item.key === "_cs_stripe_payout")?.value || 0
               // } else {
               //   totalMoney = _data.meta_data.find(item => item.key === "_stripe_net")?.value || 0;
@@ -167,7 +167,7 @@ function Alltopicsoflife() {
                   range: `GMC!A${nextRow}`,
                   valueInputOption: 'USER_ENTERED',
                   resource: {
-                    values: [[moment(_data.date_created).format('MM/DD/YYYY'), `#${_data.id}`, "Alltopicsoflife", _data.payment_method_title == "Card" ? `Stripe${_data.meta_data.find(item => item.key === "_aff_stripe_proxy_url")?.value ? ":" + _data.meta_data.find(item => item.key === "_aff_stripe_proxy_url")?.value.replace("https://", "") : ""}` : _data.payment_method_title == "PayPal" ? `PayPal${_data.meta_data.find(item => item.key === "_aff_paypal_proxy_url")?.value ? ":" + _data.meta_data.find(item => item.key === "_aff_paypal_proxy_url")?.value.replace("https://", "") : ""}` : "Stripe", "", "", first == 0 ? totalMoney : "", "", "", items.name, `${items.meta_data.find(item => item.key === "pa_type")?.display_value ? items.meta_data.find(item => item.key === "pa_type")?.display_value + " - " : ""}${items.meta_data.find(item => item.key === "pa_size")?.display_value}`, items.meta_data.find(item => item.key === "pa_color")?.display_value, items.sku, "", "", "", `https://alltopicsoflife.com/?p=${items.product_id}`, items.quantity, `${shipping.first_name} ${shipping.last_name}`, `${shipping.address_1} ${shipping.address_2} ${shipping.city}, ${shipping.state} ${shipping.postcode}`, "", "", "", "", _data.billing.phone, _data.customer_note, _data.billing.email, "", "TA"]], // Thay thế bằng dữ liệu bạn muốn thêm vào
+                    values: [[moment(_data.date_created).format('MM/DD/YYYY'), `#${_data.id}`, "Alltopicsoflife",  _data.payment_method_title == "Card" || _data.payment_method_title == "Credit/Debit Card"  ? `Stripe${_data.meta_data.find(item => item.key === "_aff_stripe_proxy_url")?.value ? ":" + _data.meta_data.find(item => item.key === "_aff_stripe_proxy_url")?.value.replace("https://", "") : ""}` : _data.payment_method_title == "PayPal" || _data.payment_method_title == "Credit Card Payment using Paypal secure" ? `PayPal${_data.meta_data.find(item => item.key === "_aff_paypal_proxy_url")?.value ? ":" + _data.meta_data.find(item => item.key === "_aff_paypal_proxy_url")?.value.replace("https://", "") : ""}` : "Stripe", "", "", first == 0 ? totalMoney : "", "", "", items.name, `${items.meta_data.find(item => item.key === "pa_type")?.display_value ? items.meta_data.find(item => item.key === "pa_type")?.display_value + " - " : ""}${items.meta_data.find(item => item.key === "pa_size")?.display_value}`, items.meta_data.find(item => item.key === "pa_color")?.display_value, items.sku, "", "", "", `https://alltopicsoflife.com/?p=${items.product_id}`, items.quantity, `${shipping.first_name} ${shipping.last_name}`, `${shipping.address_1} ${shipping.address_2} ${shipping.city}, ${shipping.state} ${shipping.postcode}`, "", "", "", "", _data.billing.phone, _data.customer_note, _data.billing.email, "", "TA"]], // Thay thế bằng dữ liệu bạn muốn thêm vào
                   },
                 });
                 nextRow++
@@ -297,7 +297,7 @@ cron.schedule('0 * * * *', function () {
   Egeadcompany();
 });
 
-cron.schedule('20 * * * *', function () {
+// cron.schedule('20 * * * *', function () {
   Alltopicsoflife()
-});
+// });
 
