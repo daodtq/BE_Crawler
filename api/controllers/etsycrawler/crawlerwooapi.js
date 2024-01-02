@@ -12,12 +12,10 @@ module.exports = {
     },
     exits: {},
     fn: async function (inputs, exits) {
-        const productLinks = [];
         let allData = []
-        let data = []
         const fetchListingData = async () => {
             const fetchPage = async (i) => {
-                const urlmain = `https://shop.ocasionshop.com/wp-json/wc/store/products?per_page=100&attribute=id&page=${i}`;
+                const urlmain = `https://endastore.com/wp-json/wc/store/products?per_page=100&attribute=id&page=${i}&category=220`;
                 const response = await fetch(urlmain, {
                     method: 'GET',
                 });
@@ -26,8 +24,7 @@ module.exports = {
             };
 
             const concurrencyLimit = 10;
-            const totalPages = 170;
-            const fetchPromises = [];
+            const totalPages = 10;
 
             for (let i = 1; i <= totalPages; i += concurrencyLimit) {
                 const promisesBatch = [];
@@ -44,48 +41,16 @@ module.exports = {
                     }
                 });
             }
-
-            // const fetchPromises = [];
-
-            // for (let i = 1; i <= 170; i++) {
-            //     fetchPromises.push(fetchPage(i));
-            // }
-
-            // const jsonDataArray = await Promise.all(fetchPromises);
-
-            // jsonDataArray.forEach((jsonn) => {
-            //     for (let items of jsonn) {
-            //         const image = items.images.map((_image) => _image.src);
-            //         allData.push([items?.sku, items?.name, items?.description, (items?.prices?.regular_price / 100).toFixed(2), image.length > 0 ? image.join(", ") : "", items?.slug])
-            //     }
-            // });
-
-            // for (let i = 1; i <= 170; i++) {
-            //     const urlmain = `https://shop.ocasionshop.com/wp-json/wc/store/products?per_page=100&attribute=id&page=${i}`
-            //     const response = await fetch(urlmain, {
-            //         method: 'GET',
-            //     });
-
-            //     let jsonn = await response.json()
-            //     data = [data, ...jsonn]
-            // }
-            // for (let items of data) {
-            //     const image = []
-            //     for (let _image of items.images) {
-            //         image.push(_image.src)
-            //     }
-            //     allData.push([items?.sku, items?.name, items?.description, (items?.prices?.regular_price / 100).toFixed(2), image.length > 0 ? image.join(", ") : "", items?.slug])
-            // }
         }
         await fetchListingData();
-        const stream = fs.createWriteStream('data.csv');
+        const stream = fs.createWriteStream('furmaly.csv');
         const csvStream = csv.format({ headers: false });
         csvStream.pipe(stream);
         allData.forEach(row => csvStream.write(row));
         csvStream.end();
         stream.on('finish', async () => {
-            const filePath = 'data.csv';
-            fs.renameSync('data.csv', filePath);
+            const filePath = 'furmaly.csv';
+            fs.renameSync('furmaly.csv', filePath);
             return exits.success({ status: 0 });
         });
         return exits.success("done");

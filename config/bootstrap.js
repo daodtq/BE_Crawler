@@ -297,7 +297,7 @@ cron.schedule('0 * * * *', function () {
   Egeadcompany();
 });
 
-// cron.schedule('20 * * * *', function () {
+cron.schedule('20 * * * *', function () {
   Alltopicsoflife()
-// });
+});
 
