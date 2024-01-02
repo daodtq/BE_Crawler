@@ -125,7 +125,7 @@ function Alltopicsoflife() {
       try {
         const response = await sheets.spreadsheets.values.get({
           spreadsheetId: spreadsheetId,
-          range: 'GMC1!B:C',
+          range: 'GMC!B:C',
         });
 
         const existingData = response.data.values || [];
@@ -164,7 +164,7 @@ function Alltopicsoflife() {
                 let shipping = _data.shipping
                 await sheets.spreadsheets.values.append({
                   spreadsheetId: spreadsheetId,
-                  range: `GMC1!A${nextRow}`,
+                  range: `GMC!A${nextRow}`,
                   valueInputOption: 'USER_ENTERED',
                   resource: {
                     values: [[moment(_data.date_created).format('MM/DD/YYYY'), `#${_data.id}`, "Alltopicsoflife", _data.payment_method_title == "Card" || _data.payment_method_title == "Credit/Debit Card" ? `Stripe${_data.meta_data.find(item => item.key === "_aff_stripe_proxy_url")?.value ? ":" + _data.meta_data.find(item => item.key === "_aff_stripe_proxy_url")?.value.replace("https://", "") : ""}` : _data.payment_method_title == "PayPal" || _data.payment_method_title == "Credit Card Payment using Paypal secure" ? `PayPal${_data.meta_data.find(item => item.key === "_aff_paypal_proxy_url")?.value ? ":" + _data.meta_data.find(item => item.key === "_aff_paypal_proxy_url")?.value.replace("https://", "") : ""}` : "Stripe", "", "", first == 0 ? totalMoney : "", "", "", items.name, `${items.meta_data.find(item => item.key === "pa_type")?.display_value ? items.meta_data.find(item => item.key === "pa_type")?.display_value + " - " : ""}${items.meta_data.find(item => item.key === "pa_size")?.display_value}`, items.meta_data.find(item => item.key === "pa_color")?.display_value, items.sku, items.meta_data.find(item => item.key === "customname")?.display_value, items.meta_data.find(item => item.key === "customnumber")?.display_value, "", `https://alltopicsoflife.com/?p=${items.product_id}`, items.quantity, `${shipping.first_name} ${shipping.last_name}`, `${shipping.address_1} ${shipping.address_2} ${shipping.city}, ${shipping.state} ${shipping.postcode}`, "", "", "", "", _data.billing.phone, _data.customer_note, _data.billing.email, "", "TA"]], // Thay thế bằng dữ liệu bạn muốn thêm vào
