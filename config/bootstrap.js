@@ -77,12 +77,21 @@ function Egeadcompany() {
                   }
                 }
                 let shipping = _data.shipping
+                const producturl = `https://egeadcompany.com/wp-json/wc/v3/products/${items.product_id}?consumer_key=ck_43f8651fe96477d02a2fa1e800b23b6ac6305520&consumer_secret=cs_7483ec0ad6159f3aa2ed2746de88c88903d45648`
+                let tags = ""
+                await fetch(producturl)
+                  .then(response1 => {
+                    return response1.json()
+                  }).then(async data => {
+                    tags = data.tags?.[0]?.name
+                  })
+
                 await sheets.spreadsheets.values.append({
                   spreadsheetId: spreadsheetId,
                   range: `GMC!A${nextRow}`,
                   valueInputOption: 'USER_ENTERED',
                   resource: {
-                    values: [[moment(_data.date_created).format('MM/DD/YYYY'), `#${_data.id}`, "Egeadcompany", _data.payment_method_title == "Card" || _data.payment_method_title == "Credit/Debit Card" ? `Stripe${_data.meta_data.find(item => item.key === "_aff_stripe_proxy_url")?.value ? ":" + _data.meta_data.find(item => item.key === "_aff_stripe_proxy_url")?.value.replace("https://", "") : ""}` : _data.payment_method_title == "PayPal" || _data.payment_method_title == "Credit Card Payment using Paypal secure" ? `PayPal${_data.meta_data.find(item => item.key === "_aff_paypal_proxy_url")?.value ? ":" + _data.meta_data.find(item => item.key === "_aff_paypal_proxy_url")?.value.replace("https://", "") : ""}` : "Stripe", "", "", totalMoney, "", "", items.name, meta_data, "", items.sku, items.meta_data.find(item => item.key === "custom")?.value || "", items.meta_data.find(item => item.key === "customimage")?.value ? (JSON.parse(items.meta_data.find(item => item.key === "customimage")?.value))[0].url : items.meta_data.find(item => item.key === "headcustom")?.value ? (JSON.parse(items.meta_data.find(item => item.key === "headcustom")?.value))[0].url : "", "", `https://egeadcompany.com/?p=${items.product_id}`, items.quantity, `${shipping.first_name} ${shipping.last_name}`, `${shipping.address_1} ${shipping.address_2} ${shipping.city}, ${shipping.state} ${shipping.postcode}`, "", "", "", "", _data.billing.phone, _data.customer_note, _data.billing.email, "", "TA"]], // Thay thế bằng dữ liệu bạn muốn thêm vào
+                    values: [[moment(_data.date_created).format('MM/DD/YYYY'), `#${_data.id}`, "Egeadcompany", _data.payment_method_title == "Card" || _data.payment_method_title == "Credit/Debit Card" ? `Stripe${_data.meta_data.find(item => item.key === "_aff_stripe_proxy_url")?.value ? ":" + _data.meta_data.find(item => item.key === "_aff_stripe_proxy_url")?.value.replace("https://", "") : ""}` : _data.payment_method_title == "PayPal" || _data.payment_method_title == "Credit Card Payment using Paypal secure" ? `PayPal${_data.meta_data.find(item => item.key === "_aff_paypal_proxy_url")?.value ? ":" + _data.meta_data.find(item => item.key === "_aff_paypal_proxy_url")?.value.replace("https://", "") : ""}` : "Stripe", "", "", totalMoney, "", "", items.name, meta_data, "", tags, items.meta_data.find(item => item.key === "custom")?.value || "", items.meta_data.find(item => item.key === "customimage")?.value ? (JSON.parse(items.meta_data.find(item => item.key === "customimage")?.value))[0].url : items.meta_data.find(item => item.key === "headcustom")?.value ? (JSON.parse(items.meta_data.find(item => item.key === "headcustom")?.value))[0].url : "", "", `https://egeadcompany.com/?p=${items.product_id}`, items.quantity, `${shipping.first_name} ${shipping.last_name}`, `${shipping.address_1} ${shipping.address_2} ${shipping.city}, ${shipping.state} ${shipping.postcode}`, "", "", "", "", _data.billing.phone, _data.customer_note, _data.billing.email, "", "TA"]], // Thay thế bằng dữ liệu bạn muốn thêm vào
                   },
                 });
                 nextRow++
@@ -167,7 +176,7 @@ function Alltopicsoflife() {
                   range: `GMC!A${nextRow}`,
                   valueInputOption: 'USER_ENTERED',
                   resource: {
-                    values: [[moment(_data.date_created).format('MM/DD/YYYY'), `#${_data.id}`, "Alltopicsoflife", _data.payment_method_title == "Card" || _data.payment_method_title == "Credit/Debit Card" ? `Stripe${_data.meta_data.find(item => item.key === "_aff_stripe_proxy_url")?.value ? ":" + _data.meta_data.find(item => item.key === "_aff_stripe_proxy_url")?.value.replace("https://", "") : ""}` : _data.payment_method_title == "PayPal" || _data.payment_method_title == "Credit Card Payment using Paypal secure" ? `PayPal${_data.meta_data.find(item => item.key === "_aff_paypal_proxy_url")?.value ? ":" + _data.meta_data.find(item => item.key === "_aff_paypal_proxy_url")?.value.replace("https://", "") : ""}` : "Stripe", "", "", first == 0 ? totalMoney : "", "", "", items.name, `${items.meta_data.find(item => item.key === "pa_type")?.display_value ? items.meta_data.find(item => item.key === "pa_type")?.display_value + " - " : ""}${items.meta_data.find(item => item.key === "pa_size")?.display_value}`, items.meta_data.find(item => item.key === "pa_color")?.display_value, items.sku, items.meta_data.find(item => item.key === "customname")?.display_value, items.meta_data.find(item => item.key === "customnumber")?.display_value, "", `https://alltopicsoflife.com/?p=${items.product_id}`, items.quantity, `${shipping.first_name} ${shipping.last_name}`, `${shipping.address_1} ${shipping.address_2} ${shipping.city}, ${shipping.state} ${shipping.postcode}`, "", "", "", "", _data.billing.phone, _data.customer_note, _data.billing.email, "", "TA"]], // Thay thế bằng dữ liệu bạn muốn thêm vào
+                    values: [[moment(_data.date_created).format('MM/DD/YYYY'), `#${_data.id}`, "Alltopicsoflife", _data.payment_method_title == "Card" || _data.payment_method_title == "Credit/Debit Card" ? `Stripe${_data.meta_data.find(item => item.key === "_aff_stripe_proxy_url")?.value ? ":" + _data.meta_data.find(item => item.key === "_aff_stripe_proxy_url")?.value.replace("https://", "") : ""}` : _data.payment_method_title == "PayPal" || _data.payment_method_title == "Credit Card Payment using Paypal secure" ? `PayPal${_data.meta_data.find(item => item.key === "_aff_paypal_proxy_url")?.value ? ":" + _data.meta_data.find(item => item.key === "_aff_paypal_proxy_url")?.value.replace("https://", "") : ""}` : "Stripe", "", "", first == 0 ? totalMoney : "", "", "", items.name, `${items.meta_data.find(item => item.key === "pa_type")?.display_value ? items.meta_data.find(item => item.key === "pa_type")?.display_value + " - " : ""}${items.meta_data.find(item => item.key === "pa_size")?.display_value}`, items.meta_data.find(item => item.key === "pa_color")?.display_value, tags, items.meta_data.find(item => item.key === "customname")?.display_value, items.meta_data.find(item => item.key === "customnumber")?.display_value, "", `https://alltopicsoflife.com/?p=${items.product_id}`, items.quantity, `${shipping.first_name} ${shipping.last_name}`, `${shipping.address_1} ${shipping.address_2} ${shipping.city}, ${shipping.state} ${shipping.postcode}`, "", "", "", "", _data.billing.phone, _data.customer_note, _data.billing.email, "", "TA"]], // Thay thế bằng dữ liệu bạn muốn thêm vào
                   },
                 });
                 nextRow++
@@ -293,9 +302,9 @@ cron.schedule('30 * * * *', function () {
   CheckImageNotQuality();
 });
 
-cron.schedule('0 * * * *', function () {
-  Egeadcompany();
-});
+// cron.schedule('0 * * * *', function () {
+Egeadcompany();
+// });
 
 cron.schedule('20 * * * *', function () {
   Alltopicsoflife()
