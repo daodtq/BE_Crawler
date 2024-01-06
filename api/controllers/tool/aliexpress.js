@@ -51,9 +51,9 @@ module.exports = {
                     // Tạo một đối tượng mới để lưu trữ kết quả
                     result.push(optionSet.name);
                 });
-               
+
                 id.push(jsonn.product.id)
-                allData.push({ title: jsonn.product.title, image: jsonn.product.images.map(image => image.src), description: jsonn.product.short_description, options: result, variable: jsonn.product.variants, GTIN: "" , variant_images: jsonn.product.variant_images})
+                allData.push({ url: i, title: jsonn.product.title, image: jsonn.product.images.map(image => image.src), description: jsonn.product.short_description, options: result, variable: jsonn.product.variants, GTIN: "", variant_images: jsonn.product.variant_images })
             }
         }
         await fetchListingData();
