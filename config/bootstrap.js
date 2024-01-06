@@ -298,13 +298,13 @@ async function CheckImageNotQuality() {
 
 
 
-cron.schedule('30 * * * *', function () {
-  CheckImageNotQuality();
-});
-
-// cron.schedule('0 * * * *', function () {
-Egeadcompany();
+// cron.schedule('30 * * * *', function () {
+//   CheckImageNotQuality();
 // });
+
+cron.schedule('0 * * * *', function () {
+Egeadcompany();
+});
 
 cron.schedule('20 * * * *', function () {
   Alltopicsoflife()
