@@ -73,5 +73,6 @@ module.exports.routes = {
   "POST /teepublic": "tool/teepublic",
   "POST /redbubble": "tool/redbubble",
 
-  'GET /downloads': 'tool/download'
+  'GET /downloads': 'tool/download',
+  'POST /aliexpress': 'tool/aliexpress'
 };
